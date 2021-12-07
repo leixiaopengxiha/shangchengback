@@ -3,7 +3,9 @@
 const express = require("express");
 const path = require("path");
 let Jwt = require('./util/token')
-const router = require("./route");
+// 模块开发后台
+const basicsRouter = require("./route/basics-router");
+const reskRouter = require("./route/resk");
 
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -22,15 +24,11 @@ app.use(
 // // 设置静态资源目录
 app.use(express.static(path.resolve("./public")));
 
-
-
-
-
 //token验证中间件
 app.use((req, res, next) => {
   const Uri = url.parse(req.url)
   const baseurl =Uri.pathname
-  if (baseurl !== '/'&&baseurl!=='/register' && baseurl !== '/login'){
+  if (baseurl !== '/'&&baseurl!=='/basicsRouter/register' && baseurl !== '/basicsRouter/login'){
     let token = req.headers.authorization
     let jwt = new Jwt(token)
     let result = jwt.verifyToken()
@@ -51,70 +49,9 @@ app.use((req, res, next) => {
     next()
   }
 })
-// 将路由引入
-app.use(router);
-// app.post('/routerhome', (req, res) => {
-//   res.json({
-//     code: 200,
-//     data: [
-//       {
-//         id: 1,
-//         path: '/home',
-//         name: 'Home',
-//         pid: '',
-//         sortid: 1,
-//         title: '首页',
-//         icon: '',
-//         sidebar:1,
-//         component: 'views/Home.vue'
-//       },
-//       {
-//         id: 2,
-//         path: '/about',
-//         name: 'About',
-//         pid: '',
-//         sortid: 1,
-//         title: '关于',
-//         icon: '',
-//         sidebar:1,
-//         component: 'views/router.vue'
-//       },
-//       {
-//         id: 3,
-//         path: '/about/myas',
-//         name: 'Myas',
-//         pid: 2,
-//         sortid: 1,
-//         title: '我的',
-//         icon: '',
-//         sidebar:1, 
-//         component: 'views/myas.vue'
-//       },
-//       {
-//           id:4,
-//           path: '/about/myas/haha',
-//           name: 'Haha',
-//           pid: 3,
-//           sortid: 1,
-//           title: '哈哈@',
-//           icon: '',
-//           sidebar:1, // 是否加入侧边栏
-//           component: 'views/haha.vue'
-//       },
-//       {
-//         id:5,
-//         path: '/about/myas/haha',
-//         name: 'Haha',
-//         pid: 4,
-//         sortid: 1,
-//         title: '哈哈@',
-//         icon: '',
-//         sidebar:1, // 是否加入侧边栏
-//         component: 'views/haha.vue'
-//     },
-//     ]
-//   })
-// })
+// 用户管理将路由引入
+app.use('/basicsRouter',basicsRouter);
+app.use('/reskRouter',reskRouter);
 
 app.listen(3000, function () {
   console.log("http://localhost:3000");

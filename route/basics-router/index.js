@@ -32,6 +32,22 @@ router
   .post('/queryrouterlist',admin.QueryRouterList)
   // 给用户添加路由权限
   .post('/upuserrouter',admin.upUserRouter)
+  // 添加角色管理
+  .post('/addrolemanagement',admin.AddRoleManagement)
+  // 添加角色人员
+  .post('/addRolePersonnel',admin.AddRolePersonnel)
+  // 添加角色路由权限
+  .post('/addRolePermissions',admin.AddRolePermissions)
+  // 获取角色管理列表
+  .post('/allRoleManagement',admin.AllRoleManagement)
+  // 修改角色管理
+  .post('/updateRoleManagement',admin.UpdateRoleManagement)
+  // 获取角色人员管理
+  .post('/allRolePersonnel',admin.AllRolePersonnel)
+  // 获取角色路由权限
+  .post('/allRolePermissions',admin.AllRolePermissions)
+
+  
 module.exports = router
 
 

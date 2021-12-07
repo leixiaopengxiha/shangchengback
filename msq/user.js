@@ -20,8 +20,8 @@ exports.RegistrationMsq = async (data, Callback) => {
     }
     data.roles = JSON.stringify(data.roles)
     // 新增数据
-    let addSql = 'INSERT INTO user(id,username,password,nickname,avatar,introduction,date,operationtime,roles) VALUES(0,?,?,?,?,?,?,?,?)';
-    let addSqlParams = [data.username, data.password, data.nickname, data.avatar, data.introduction,data.date, data.operationtime,data.roles];
+    let addSql = 'INSERT INTO user(id,username,password,nickname,avatar,introduction,date,operationtime) VALUES(0,?,?,?,?,?,?,?)';
+    let addSqlParams = [data.username, data.password, data.nickname, data.avatar, data.introduction,data.date, data.operationtime];
     let addDoc = await sqlFun(addSql, addSqlParams)
     if(addDoc.affectedRows==1&&addDoc.protocol41==true){
         Callback({
@@ -143,8 +143,6 @@ exports.GetInfoMsq = async (data, Callback) => {
     })
 }
 
-
-
 // 获取用户路由信息
 exports.GetRouterMsq = async (data, Callback) => {
     let sql = 'SELECT roles FROM user WHERE username=?';
@@ -210,22 +208,22 @@ exports.AllUserMsq = async (data, Callback) => {
         data:doc
     })
 }
-// 修改用户路由信息
-exports.UpdateRouterMsq = async (data, Callback) => {
-    let sql = 'UPDATE user SET roles=? WHERE username= ?';
-    let sqlParams = [data.roles,data.username];
-    let doc = await sqlFun(sql, sqlParams)
-    if(doc.err){
-        Callback({
-            code:50008,
-            message:'数据操作失败请联系管理员'
-        })
-        return
-    }
-    Callback({
-        data:doc
-    })
-}
+// // 修改用户路由信息
+// exports.UpdateRouterMsq = async (data, Callback) => {
+//     let sql = 'UPDATE user SET roles=? WHERE username= ?';
+//     let sqlParams = [data.roles,data.username];
+//     let doc = await sqlFun(sql, sqlParams)
+//     if(doc.err){
+//         Callback({
+//             code:50008,
+//             message:'数据操作失败请联系管理员'
+//         })
+//         return
+//     }
+//     Callback({
+//         data:doc
+//     })
+// }
 
 // 删除用户
 exports.deleteUserMsq = async (data, Callback) => {
@@ -347,11 +345,224 @@ exports.UpdateRouterListMsq = async (data, Callback) => {
     })
 }
 
+// 添加角色管理
+exports.setAddRoleManagement= async (data, Callback) => {
+    let sql =  'INSERT INTO roleManagement(id,jsmc,jszl,syzt,jslx) VALUES(0,?,?,?,?)';
+    let addSqlParams = [data.jsmc, data.jszl, data.syzt, data.jslx];
+    let doc = await sqlFun(sql,addSqlParams)
+    if(doc.err){
+        Callback({
+            code:50008,
+            message:'数据操作失败请联系管理员'
+        })
+        return
+    }
+    Callback({
+        data:doc
+    })
+}
+
+// 获取角色管理列表
+exports.getAllRoleManagement = async (data, Callback) => {
+    let sqlTotal = "select count(1) as total from roleManagement where 1=1";
+    let sqlDate = "select * from roleManagement where 1=1";
+    let sqltArr = []
+    let sqldArr = []
+    if(data.id){
+        sqlTotal += " and id like ?";
+        sqlDate  += " and id like ?";
+        sqltArr.push(`%${data.id}%`);
+        sqldArr.push(`%${data.id}%`);
+    }
+    if(data.jsmc){
+        sqlTotal += " and jsmc like ?";
+        sqlDate  += " and jsmc like ?";
+        sqltArr.push(`%${data.jsmc}%`);
+        sqldArr.push(`%${data.jsmc}%`);
+    }
+    if(data.syzt){
+        sqlTotal += " and syzt like ?";
+        sqlDate += " and syzt like ?";
+        sqltArr.push(`%${data.syzt}%`);
+        sqldArr.push(`%${data.syzt}%`);
+    }
+    if(data.currentPage&&data.size){
+        sqlDate += " limit ?,?";
+        let start = (data.currentPage-1)*data.size
+        let end = data.currentPage*data.size
+        sqldArr.push(start,end);
+    }
+    // 合并sql 语句
+    let sql = `${sqlTotal};${sqlDate}`
+    // 合并查询数据
+    let arrs = [...sqltArr,...sqldArr]
+
+    let doc = await sqlFun(sql,arrs)
+    if(doc.err){
+        Callback({
+            code:50008,
+            message:'数据操作失败请联系管理员'
+        })
+        return
+    }
+    Callback({
+        data:doc
+    })
+}
+// 修改角色管理
+exports.UpdateRoleManagementMsq = async (data, Callback) => {
+    let sql = 'UPDATE roleManagement SET jsmc=?,jszl=?,syzt=?,jslx=? WHERE id= ?';
+    let sqlParams = [data.jsmc,data.jszl,data.syzt,data.jslx,data.id];
+    let doc = await sqlFun(sql, sqlParams)
+    if(doc.err){
+        Callback({
+            code:50008,
+            message:'数据操作失败请联系管理员'
+        })
+        return
+    }
+    Callback({
+        data:doc
+    })
+}
+
+// 添加角色人员管理
+exports.setAddRolePersonnel = async (data, Callback) => {
+    let sqld =  'DELETE FROM rolePersonnel WHERE roleId = ?';
+    let addSqlParams = [data.roleId];
+    let delets = await sqlFun(sqld,addSqlParams)
+    if(delets.err){
+        Callback({
+            code:50008,
+            message:'数据操作失败请联系管理员'
+        })
+        return
+    }
+    let sql =  'INSERT INTO rolePersonnel(id,userId,roleId) VALUES ?';
+    let doc = await sqlFun(sql,data.sqlList,true)
+    if(doc.err){
+        Callback({
+            code:50008,
+            message:'数据操作失败请联系管理员'
+        })
+        return
+    }
+    Callback({
+        data:doc
+    })
+}
+// 获取角色管理的数据
+exports.AllRoleManagementMsq = async (data, Callback) => {
+    let sql = `SELECT * FROM roleManagement WHERE id in (${data})`;
+    let doc = await sqlFun(sql)
+    if(doc.err){
+        Callback({
+            code:50008,
+            message:'数据操作失败请联系管理员'
+        })
+        return
+    }
+    Callback({
+        data:doc
+    })
+}
+// 获取角色人员管理查询数据
+exports.AllRolePersonnelMsq = async (data, Callback) => {
+    let sql = "select * from rolePersonnel where 1=1";
+    let sqlParams = [];
+    if(data.roleId){
+        sql += ' and roleId like ?' 
+       sqlParams.push(data.roleId)
+    }
+    if(data.userId){
+        sql += ' and userId like ?'
+        sqlParams.push(data.userId)
+    }
+    let doc = await sqlFun(sql, sqlParams)
+    if(doc.err){
+        Callback({
+            code:50008,
+            message:'数据操作失败请联系管理员'
+        })
+        return
+    }
+    Callback({
+        data:doc
+    })
+}
+
+// 添加角色路由
+exports.setAddRolePermissions = async (data, Callback, isShou) => {
+    if(!isShou){
+        let sqld =  'DELETE FROM rolePermissions WHERE roleId = ?';
+        let addSqlParams = [data.roleId];
+        let delets = await sqlFun(sqld,addSqlParams)
+        if(delets.err){
+            Callback({
+                code:50008,
+                message:'数据操作失败请联系管理员'
+            })
+            return
+        }
+    }
+    if(data.sqlList.length==0){
+        Callback({
+            data:[]
+        })
+        return 
+    }
+    let sql =  'INSERT INTO rolePermissions(id,routerId,roleId) VALUES ?';
+    let doc = await sqlFun(sql,data.sqlList,true)
+    if(doc.err){
+        Callback({
+            code:50008,
+            message:'数据操作失败请联系管理员'
+        })
+        return
+    }
+    Callback({
+        data:doc
+    })
+}
+
+// 获取角色路由
+exports.AllRolePermissionsMsq = async (data, Callback) => {
+    let sql = `SELECT * FROM rolePermissions WHERE roleId in (${data})`;
+    let doc = await sqlFun(sql)
+    if(doc.err){
+        Callback({
+            code:50008,
+            message:'数据操作失败请联系管理员'
+        })
+        return
+    }
+    Callback({
+        data:doc
+    })
+}
+
+
+// 删除角色路由
+exports.DeleteRolePermissionsMsq= async (data, Callback) => {
+    let sql =  'DELETE FROM rolePermissions WHERE routerId = ?';
+    let sqlParams = [data];
+    let doc = await sqlFun(sql, sqlParams)
+    if(doc.err){
+        Callback({
+            code:50008,
+            message:'数据操作失败请联系管理员'
+        })
+        return
+    }
+    Callback({
+        data:doc
+    })
+}
 
 
 
 
-
+// 获取角色权限路由
 
 
 

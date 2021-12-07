@@ -2,9 +2,9 @@
 let mysql = require('mysql');
 
 let connection = mysql.createConnection({
-  host: 'localhost',
+  host: '49.232.206.220',
   user: 'root',
-  password: '123456',
+  password: 'xp123456',
   database: 'ShoppingMall',
   //这一功能打开以后，你就可以像下面的例子一样同时使用多条查询语句：
   multipleStatements: true,
@@ -18,9 +18,9 @@ exports.sqlFun = (sql, user, isShow,) => {
   if (isShow) {
     sqlany = new Promise((resolve, reject) => {
       connection.query(sql, [user], function (err, result) {
-        debugger
         if (err) {
           resolve({
+            errorMsg:err,
             err: true
           })
           return;
@@ -33,6 +33,7 @@ exports.sqlFun = (sql, user, isShow,) => {
       connection.query(sql, user, function (err, result) {
         if (err) {
           resolve({
+            errorMsg:err,
             err: true
           })
           return;
@@ -45,6 +46,7 @@ exports.sqlFun = (sql, user, isShow,) => {
       connection.query(sql, function (err, result) {
         if (err) {
           resolve({
+            errorMsg:err,
             err: true
           })
           return;
