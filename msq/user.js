@@ -51,6 +51,7 @@ exports.LoginMsq = async (data, Callback) => {
     if(doc.err){
         Callback({
             code:50008,
+            data:doc.errorMsg,
             message:'数据操作失败请联系管理员'
         })
         return
@@ -87,6 +88,7 @@ exports.UpdateUserMsqs = async (data, Callback) => {
     if(doc.err){
         Callback({
             code:50008,
+            data:doc.errorMsg,
             message:'数据操作失败请联系管理员'
         })
 
@@ -104,6 +106,7 @@ exports.UpdateUserPwdMsqs = async (data, Callback) => {
     if(doc.err){
         Callback({
             code:50008,
+            data:doc.errorMsg,
             message:'数据操作失败请联系管理员'
         })
     }
@@ -122,6 +125,7 @@ exports.GetInfoMsq = async (data, Callback) => {
     if(doc.err){
         Callback({
             code:50008,
+            data:doc.errorMsg,
             message:'数据操作失败请联系管理员'
         })
         return
@@ -129,6 +133,7 @@ exports.GetInfoMsq = async (data, Callback) => {
     if (doc.length == 0) {
         Callback({
             code: 50008,
+            data:doc.errorMsg,
             message: "登录失败，无法获取用户详细信息"
         })
         return 
@@ -151,6 +156,7 @@ exports.GetRouterMsq = async (data, Callback) => {
     if(doc.err){
         Callback({
             code:50008,
+            data:doc.errorMsg,
             message:'数据操作失败请联系管理员'
         })
         return
@@ -158,6 +164,7 @@ exports.GetRouterMsq = async (data, Callback) => {
     if (doc.length == 0) {
         Callback({
             code: 50008,
+            data:doc.errorMsg,
             message: "获取失败，无法获取用户信息"
         })
         return 
@@ -200,6 +207,7 @@ exports.AllUserMsq = async (data, Callback) => {
     if(doc.err){
         Callback({
             code:50008,
+            data:doc.errorMsg,
             message:'数据操作失败请联系管理员'
         })
         return
@@ -233,6 +241,7 @@ exports.deleteUserMsq = async (data, Callback) => {
     if(doc.err){
         Callback({
             code:50008,
+            data:doc.errorMsg,
             message:'数据操作失败请联系管理员'
         })
         return
@@ -249,6 +258,7 @@ exports.GetRouterListMsq= async (data, Callback) => {
     if(doc.err){
         Callback({
             code:50008,
+            data:doc.errorMsg,
             message:'数据操作失败请联系管理员'
         })
         return
@@ -283,6 +293,7 @@ exports.GetQueryRouterListMsq= async (data, Callback) => {
     if(doc.err){
         Callback({
             code:50008,
+            data:doc.errorMsg,
             message:'数据操作失败请联系管理员'
         })
         return
@@ -301,6 +312,7 @@ exports.GetAddRouterMsq = async (data, Callback) => {
     if(doc.err){
         Callback({
             code:50008,
+            data:doc.errorMsg,
             message:'数据操作失败请联系管理员'
         })
         return
@@ -317,6 +329,7 @@ exports.deleteRouterListMsqs = async (data, Callback) => {
     if(doc.err){
         Callback({
             code:50008,
+            data:doc.errorMsg,
             message:'数据操作失败请联系管理员'
         })
         return
@@ -336,6 +349,7 @@ exports.UpdateRouterListMsq = async (data, Callback) => {
     if(doc.err){
         Callback({
             code:50008,
+            data:doc.errorMsg,
             message:'数据操作失败请联系管理员'
         })
         return
@@ -353,6 +367,7 @@ exports.setAddRoleManagement= async (data, Callback) => {
     if(doc.err){
         Callback({
             code:50008,
+            data:doc.errorMsg,
             message:'数据操作失败请联系管理员'
         })
         return
@@ -401,6 +416,7 @@ exports.getAllRoleManagement = async (data, Callback) => {
     if(doc.err){
         Callback({
             code:50008,
+            data:doc.errorMsg,
             message:'数据操作失败请联系管理员'
         })
         return
@@ -417,6 +433,7 @@ exports.UpdateRoleManagementMsq = async (data, Callback) => {
     if(doc.err){
         Callback({
             code:50008,
+            data:doc.errorMsg,
             message:'数据操作失败请联系管理员'
         })
         return
@@ -434,6 +451,7 @@ exports.setAddRolePersonnel = async (data, Callback) => {
     if(delets.err){
         Callback({
             code:50008,
+            data:doc.errorMsg,
             message:'数据操作失败请联系管理员'
         })
         return
@@ -443,6 +461,7 @@ exports.setAddRolePersonnel = async (data, Callback) => {
     if(doc.err){
         Callback({
             code:50008,
+            data:doc.errorMsg,
             message:'数据操作失败请联系管理员'
         })
         return
@@ -458,6 +477,7 @@ exports.AllRoleManagementMsq = async (data, Callback) => {
     if(doc.err){
         Callback({
             code:50008,
+            data:doc.errorMsg,
             message:'数据操作失败请联系管理员'
         })
         return
@@ -482,6 +502,7 @@ exports.AllRolePersonnelMsq = async (data, Callback) => {
     if(doc.err){
         Callback({
             code:50008,
+            data:doc.errorMsg,
             message:'数据操作失败请联系管理员'
         })
         return
@@ -500,6 +521,7 @@ exports.setAddRolePermissions = async (data, Callback, isShou) => {
         if(delets.err){
             Callback({
                 code:50008,
+                data:doc.errorMsg,
                 message:'数据操作失败请联系管理员'
             })
             return
@@ -516,6 +538,7 @@ exports.setAddRolePermissions = async (data, Callback, isShou) => {
     if(doc.err){
         Callback({
             code:50008,
+            data:doc.errorMsg,
             message:'数据操作失败请联系管理员'
         })
         return
@@ -532,6 +555,7 @@ exports.AllRolePermissionsMsq = async (data, Callback) => {
     if(doc.err){
         Callback({
             code:50008,
+            data:doc.errorMsg,
             message:'数据操作失败请联系管理员'
         })
         return
@@ -550,6 +574,88 @@ exports.DeleteRolePermissionsMsq= async (data, Callback) => {
     if(doc.err){
         Callback({
             code:50008,
+            data:doc.errorMsg,
+            message:'数据操作失败请联系管理员'
+        })
+        return
+    }
+    Callback({
+        data:doc
+    })
+}
+
+// 新增表单列表
+exports.AddFormListMsq= async (data, Callback) => {
+    let sql =  'INSERT INTO formList(formId,formName,fontSize,sidebar) VALUES (0,?,?,?)';
+    let addSqlParams = [data.formName, data.fontSize, data.sidebar];
+    console.log(addSqlParams)
+    let doc = await sqlFun(sql, addSqlParams)
+    console.log(doc)
+    if(doc.err){
+        Callback({
+            code:50008,
+            data:doc.errorMsg,
+            message:'数据操作失败请联系管理员'
+        })
+        return
+    }
+    Callback({
+        data:doc
+    })
+}
+// 修改表单列表
+exports.ModifyFormListMsq= async (data, Callback) => {
+    // formList
+    let sql =  'UPDATE  formList SET formName=?,fontSize=?,sidebar=? WHERE formId=?';
+    let sqlParams = [data.formName,data.fontSize,data.sidebar,data.formId];
+    let doc = await sqlFun(sql, sqlParams)
+    if(doc.err){
+        Callback({
+            code:50008,
+            data:doc.errorMsg,
+            message:'数据操作失败请联系管理员'
+        })
+        return
+    }
+    Callback({
+        data:doc
+    })
+}
+
+// 获取表单列表
+exports.GetAllFormListMsq = async (data, Callback) => {
+    let sqlTotal = "select count(1) as total from formList where 1=1";
+    let sqlDate = "select * from formList where 1=1";
+    let sqltArr = []
+    let sqldArr = []
+    if(data.formId){
+        sqlTotal += " and formId like ?";
+        sqlDate  += " and formId like ?";
+        sqltArr.push(`%${data.formId}%`);
+        sqldArr.push(`%${data.formId}%`);
+    }
+    if(data.formName){
+        sqlTotal += " and formName like ?";
+        sqlDate  += " and formName like ?";
+        sqltArr.push(`%${data.formName}%`);
+        sqldArr.push(`%${data.formName}%`);
+    }
+    // 是否有分页器
+    if(data.currentPage&&data.size){
+        sqlDate += " limit ?,?";
+        let start = (data.currentPage-1)*data.size
+        let end = data.currentPage*data.size
+        sqldArr.push(start,end);
+    }
+    // 合并sql 语句
+    let sql = `${sqlTotal};${sqlDate}`
+    // 合并查询数据
+    let arrs = [...sqltArr,...sqldArr]
+    let doc = await sqlFun(sql,arrs)
+    if(doc.err){
+        Callback({
+            code:50008,
+            data:doc.errorMsg,
             message:'数据操作失败请联系管理员'
         })
         return
@@ -561,8 +667,6 @@ exports.DeleteRolePermissionsMsq= async (data, Callback) => {
 
 
 
-
-// 获取角色权限路由
 
 
 

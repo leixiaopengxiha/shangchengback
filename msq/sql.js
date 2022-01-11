@@ -1,8 +1,8 @@
 // 用户库
 let mysql = require('mysql');
-
 let connection = mysql.createConnection({
   host: '49.232.206.220',
+  // host: 'localhost',
   user: 'root',
   password: 'xp123456',
   database: 'ShoppingMall',
@@ -10,6 +10,8 @@ let connection = mysql.createConnection({
   multipleStatements: true,
 });
 
+const log4js= require('../log-config')
+const errlogger = log4js.getLogger('err')
 // 链接
 connection.connect();
 
@@ -23,6 +25,9 @@ exports.sqlFun = (sql, user, isShow,) => {
             errorMsg:err,
             err: true
           })
+          errlogger.error({
+            logger:err
+          });
           return;
         }
         resolve(result)
@@ -36,6 +41,9 @@ exports.sqlFun = (sql, user, isShow,) => {
             errorMsg:err,
             err: true
           })
+          errlogger.error({
+            logger:err
+          });
           return;
         }
         resolve(result)
@@ -49,6 +57,9 @@ exports.sqlFun = (sql, user, isShow,) => {
             errorMsg:err,
             err: true
           })
+          errlogger.error({
+            logger:err
+          });
           return;
         }
         resolve(result)

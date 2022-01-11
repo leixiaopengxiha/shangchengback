@@ -11,6 +11,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 let app = express();
 var url=require('url');
+const httpProxy = require('express-http-proxy')
 //挂载参数处理中间件
 app.use(cors());
 //处理json格式的参数
@@ -21,9 +22,15 @@ app.use(
     extended: true
   })
 );
-// // 设置静态资源目录
+// 设置静态资源目录
 app.use(express.static(path.resolve("./public")));
 
+const log4js= require('./log-config')
+const logger = log4js.getLogger()//根据需要获取logger
+const errlogger = log4js.getLogger('err')
+const othlogger = log4js.getLogger('oth')
+//结合express使用，记录请求日志
+log4js.useLogger(app,logger)//这样会自动记录每次请求信息，放在其他use上面
 //token验证中间件
 app.use((req, res, next) => {
   const Uri = url.parse(req.url)
@@ -41,6 +48,13 @@ app.use((req, res, next) => {
           },
           message: '令牌已失效，请重新登录'
       });
+      othlogger.info({
+        code: 4001,
+        data: {
+            token,
+        },
+        message: '令牌已失效，请重新登录'
+    })
     } else {
       global.token = result
         next()
@@ -52,7 +66,21 @@ app.use((req, res, next) => {
 // 用户管理将路由引入
 app.use('/basicsRouter',basicsRouter);
 app.use('/reskRouter',reskRouter);
+const userServiceProxy = httpProxy('http://localhost:3034')
+// 后期开的微服务与网关使用
+app.use('/aaa', (req,res,next)=>{
+  console.log('aaa')
+  userServiceProxy(req, res, (errs)=>{
+    res.json({
+      code:0,
+      err: req._parsedOriginalUrl.pathname,
+      msg:'网关或后台服务可能开小差了，请稍后重试',
+    })
+    errlogger.error('pathname: ',req._parsedOriginalUrl.pathname,'headers: ',req.headers,'query: ',req.query,'params ',req.params,'body: ',req.body,'errs: ',errs)
+ })
+})
 
-app.listen(3000, function () {
-  console.log("http://localhost:3000");
+
+app.listen(3033, function () {
+  console.log("http://localhost:3033");
 });

@@ -46,7 +46,12 @@ router
   .post('/allRolePersonnel',admin.AllRolePersonnel)
   // 获取角色路由权限
   .post('/allRolePermissions',admin.AllRolePermissions)
-
+  // 添加表单列表
+  .post('/addFormList',admin.AddFormList)
+  // 修改表单列表
+  .post('/modifyFormList',admin.ModifyFormList)
+  // 获取表单列表
+  .post('/getAllFormList',admin.GetAllFormList)
   
 module.exports = router
 

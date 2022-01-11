@@ -503,3 +503,59 @@ exports.AllRolePermissions  = (req,res)=>{
         });
     })
 }
+
+// AddFormListMsq
+
+// 新增表单列
+exports.AddFormList = (req,res)=>{
+    let data = JSON.parse(JSON.stringify(req.body))
+    console.log(data)
+    userMsq.AddFormListMsq(data,(docd)=>{
+        if (!docd.data) {
+            res.json(docd)
+            return
+        }
+        res.json({
+            code: 2000,
+            data:{id:docd.data.insertId},
+            message: "保存成功"
+        });
+    })
+}
+// 修改表单列
+exports.ModifyFormList = (req,res)=>{
+    let data = JSON.parse(JSON.stringify(req.body))
+    console.log(data)
+    userMsq.ModifyFormListMsq(data,(docd)=>{
+        if (!docd.data) {
+            res.json(docd)
+            return
+        }
+        res.json({
+            code: 2000,
+            data:{id:docd.data.insertId},
+            message: "修改成功"
+        });
+    })
+}
+
+// 获取表单列表
+exports.GetAllFormList = (req,res)=>{
+    let data = JSON.parse(JSON.stringify(req.body))
+    console.log(data)
+    userMsq.GetAllFormListMsq(data,(docd)=>{
+        if (!docd.data) {
+            res.json(docd)
+            return
+        }
+        console.log(docd)
+        let total = docd.data[0][0].total
+        let dataList =  docd.data[1]
+        res.json({
+             code: 2000,
+             total: total,
+             data: dataList,
+             message: "获取成功"
+        });
+    })
+}
