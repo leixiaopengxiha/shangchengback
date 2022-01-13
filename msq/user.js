@@ -486,6 +486,29 @@ exports.AllRoleManagementMsq = async (data, Callback) => {
         data:doc
     })
 }
+// 获取路由信息
+exports.AllRoterTapListMsq = async (data, Callback) => {
+    let sql = `SELECT * FROM routerLsit WHERE id IN (SELECT
+        routerId 
+    FROM
+        rolePermissions 
+    WHERE
+        roleId IN ( SELECT id FROM roleManagement WHERE id  IN( SELECT roleId FROM rolePersonnel WHERE userId = ? ) AND syzt = '1' )
+    )`
+   let sqlParams =  [data.userId]
+    let doc = await sqlFun(sql, sqlParams)
+    if(doc.err){
+        Callback({
+            code:50008,
+            data:doc.errorMsg,
+            message:'数据操作失败请联系管理员'
+        })
+        return
+    }
+    Callback({
+        data:doc
+    })
+}
 // 获取角色人员管理查询数据
 exports.AllRolePersonnelMsq = async (data, Callback) => {
     let sql = "select * from rolePersonnel where 1=1";

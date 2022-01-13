@@ -103,6 +103,7 @@ exports.GetInfo = (req, res) => {
     let token = req.headers.authorization
     let jwt = new Jwt(token)
     let result = jwt.verifyToken()
+    console.log(result,'1221')
     userMsq.GetInfoMsq({ username: result }, (docs) => {
         if (!docs.data) {
             res.json(docs)
@@ -147,73 +148,23 @@ exports.routerPage = (req, res) => {
     if(req.body.userId){
         result = req.body.userId
     }
-   
-    // 获取角色人员
-    userMsq.AllRolePersonnelMsq({userId:result},(useDocd)=>{
-        if (!useDocd.data) {
-            res.json(useDocd)
+    userMsq.AllRoterTapListMsq({userId:result},(docs)=>{
+        if (!docs.data) {
+            res.json(docs)
             return
         }
-        let arr = []
-        if(!useDocd.data.length){
+        if(!docs.data.length){
             res.json({
                 code:50008,
                 message: "该用户未开通路由"
             })
             return
         }
-        useDocd.data.map(item=>{
-            arr.push(item.roleId)
-        })
-        let roleId = arr.join(',')
-        // 获取角色管理数据做处理
-        userMsq.AllRoleManagementMsq(roleId,(manDate)=>{
-            let manList = []
-            // 判断该角色是不是属于禁用转态
-            manDate.data.map(item=>{
-               if(item.syzt != '2') {
-                manList.push(item.id)
-               }
-            })
-            manList = manList.join(',')
-            // 获取角色路由权限
-            userMsq.AllRolePermissionsMsq(manList,(roleDocd)=>{
-                if (!roleDocd.data) {
-                    res.json(roleDocd)
-                    return
-                }
-                if(!roleDocd.data.length){
-                    res.json({
-                        code:50008,
-                        message: "该用户未开通路由"
-                    })
-                    return
-                }
-                let roles = []
-                roleDocd.data.map(item=>{
-                    roles.push(item.routerId)
-                })
-                // 去掉重复id
-                let fundCodeObj = {};
-                let rolesList = roles.reduce((item,next)=>{
-                    fundCodeObj[next] ? '' : fundCodeObj[next] = true && item.push(next)
-                    return item
-                },[])
-                rolesList = rolesList.join(',')
-                //  获取路由信息
-                userMsq.GetRouterListMsq(rolesList, (docs) => {
-                    if (!docs.data) {
-                        res.json(docs)
-                        return
-                    }
-                    res.json({
-                        code: 2000,
-                        data: docs.data,
-                        message: "路由信息获取成功"
-                    });
-                })
-            })
-        })
+        res.json({
+            code: 2000,
+            data: docs.data,
+            message: "路由信息获取成功"
+        });
     })
 }
 // 用户管理页面信息
