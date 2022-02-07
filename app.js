@@ -2,6 +2,8 @@
 //  入口文件
 const express = require("express");
 const path = require("path");
+const fs = require('fs')
+const moment = require('moment')
 let Jwt = require('./util/token')
 // 模块开发后台
 const basicsRouter = require("./route/basics-router");
@@ -31,6 +33,30 @@ const errlogger = log4js.getLogger('err')
 const othlogger = log4js.getLogger('oth')
 //结合express使用，记录请求日志
 log4js.useLogger(app,logger)//这样会自动记录每次请求信息，放在其他use上面
+
+// 定时任务清楚日志文件
+let yitina = 24*60*60*1000
+// let yitina = 1000
+function clearLogsFun(){
+  let time = new Date().getTime()
+  let logsfs = fs.readdirSync('./logs');
+  let jin = moment().format("YYYY-MM-DD")
+  let qian  = moment(time-yitina).format("YYYY-MM-DD")
+  let daqian =  moment(time-(yitina*2)).format("YYYY-MM-DD")
+  logsfs.map(item=>{
+    console.log(item.indexOf(jin),jin,qian,daqian)
+    if(item.indexOf(jin)=='-1'||item.indexOf(qian)=='-1'){
+      fs.unlinkSync(`./logs/${item}`,function (err) {
+        if (err) throw err;
+    });
+    }
+  })
+}
+// clearLogsFun()
+setInterval(()=>{
+  clearLogsFun()
+},yitina)
+
 //token验证中间件
 app.use((req, res, next) => {
   const Uri = url.parse(req.url)

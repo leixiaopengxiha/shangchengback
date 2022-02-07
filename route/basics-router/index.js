@@ -52,7 +52,10 @@ router
   .post('/modifyFormList',admin.ModifyFormList)
   // 获取表单列表
   .post('/getAllFormList',admin.GetAllFormList)
-  
+  // 添加修改表单配置列表
+  .post('/addFormConfiguration',admin.AddFormConfiguration)
+  // 获取表单配置列表
+  .post('/getAllFormConfigurationList',admin.GetAllFormConfigurationList)
 module.exports = router
 
 

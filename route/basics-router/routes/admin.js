@@ -6,6 +6,8 @@ let userMsq = require('../../../msq/user')
 
 let Jwt = require('../../../util/token');
 
+const log4js= require('../../../log-config')
+const othlogger = log4js.getLogger('oth')
 // const path = require("path");
 // const fs = require('fs')
 // 注册
@@ -86,7 +88,7 @@ exports.Login = (req, res) => {
             res.json(docs)
             return
         }
-        let jwt = new Jwt(docs.data.username)
+        let jwt = new Jwt(datas.username)
         let token = jwt.generateToken()
         res.json({
             code: 20000,
@@ -103,7 +105,6 @@ exports.GetInfo = (req, res) => {
     let token = req.headers.authorization
     let jwt = new Jwt(token)
     let result = jwt.verifyToken()
-    console.log(result,'1221')
     userMsq.GetInfoMsq({ username: result }, (docs) => {
         if (!docs.data) {
             res.json(docs)
@@ -147,6 +148,14 @@ exports.routerPage = (req, res) => {
     let result = jwt.verifyToken()
     if(req.body.userId){
         result = req.body.userId
+    }
+    if(!result){
+        othlogger.info({
+            data: {
+                userId:result,
+            },
+            message: '获取路由信息'
+        })
     }
     userMsq.AllRoterTapListMsq({userId:result},(docs)=>{
         if (!docs.data) {
@@ -506,6 +515,45 @@ exports.GetAllFormList = (req,res)=>{
              code: 2000,
              total: total,
              data: dataList,
+             message: "获取成功"
+        });
+    })
+}
+
+// 新增修改表单列
+exports.AddFormConfiguration = (req,res)=>{
+    let data = JSON.parse(JSON.stringify(req.body))
+    console.log(data)
+    userMsq.AddFormConfigurationMsq(data,(docd)=>{
+        if (!docd.data) {
+            res.json(docd)
+            return
+        }
+        res.json({
+            code: 2000,
+            data:{id:docd.data.insertId},
+            message: "保存成功"
+        });
+    })
+}
+
+
+// 获取表单配置列表
+exports.GetAllFormConfigurationList = (req,res)=>{
+    let data = JSON.parse(JSON.stringify(req.body))
+    console.log(data)
+    userMsq.AllFormConfigurationMsq(data.formId,(docd)=>{
+        if (!docd.data) {
+            res.json(docd)
+            return
+        }
+        let datas = docd.data.map(item=>{
+            item.rules = JSON.parse(item.rules)
+            return item
+        })
+        res.json({
+             code: 2000,
+             data: datas,
              message: "获取成功"
         });
     })
