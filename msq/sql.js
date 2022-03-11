@@ -1,6 +1,6 @@
 // 用户库
 let mysql = require('mysql');
-const log4js= require('../log-config')
+const log4js = require('../log-config')
 const errlogger = log4js.getLogger('err')
 exports.sqlFun = (sql, user, isShow,) => {
   let connection = mysql.createConnection({
@@ -14,20 +14,20 @@ exports.sqlFun = (sql, user, isShow,) => {
   });
   // 链接===
   connection.connect();
-  
+
   let sqlany
   if (isShow) {
     sqlany = new Promise((resolve, reject) => {
       connection.query(sql, [user], function (err, result) {
         if (err) {
           resolve({
-            errorMsg:err,
+            errorMsg: err,
             err: true
           })
           errlogger.error({
-            sql:sql,
-            user:user,
-            logger:err
+            sql: sql,
+            user: user,
+            logger: err
           });
           return;
         }
@@ -39,13 +39,13 @@ exports.sqlFun = (sql, user, isShow,) => {
       connection.query(sql, user, function (err, result) {
         if (err) {
           resolve({
-            errorMsg:err,
+            errorMsg: err,
             err: true
           })
           errlogger.error({
-            sql:sql,
-            user:user,
-            logger:err
+            sql: sql,
+            user: user,
+            logger: err
           });
           return;
         }
@@ -57,13 +57,13 @@ exports.sqlFun = (sql, user, isShow,) => {
       connection.query(sql, function (err, result) {
         if (err) {
           resolve({
-            errorMsg:err,
+            errorMsg: err,
             err: true
           })
           errlogger.error({
-            sql:sql,
-            user:user,
-            logger:err
+            sql: sql,
+            user: user,
+            logger: err
           });
           return;
         }

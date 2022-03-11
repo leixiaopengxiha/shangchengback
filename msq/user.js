@@ -687,40 +687,50 @@ exports.GetAllFormListMsq = async (data, Callback) => {
 
 // 新增修改表单配置列表
 exports.AddFormConfigurationMsq = async (data, Callback) => {
-    let deleteSql = 'DELETE FROM formConfiguration WHERE formId = ?';
-    let delSqlParams = [data.formId]
-    let delDoc = await sqlFun(deleteSql, delSqlParams)
-    if (delDoc.err) {
-        Callback({
-            code: 50008,
-            error: delDoc.errorMsg,
-            message: '数据操作失败请联系管理员'
-        })
-        return
+    if( data.deleteList.length){
+        console.log(data.deleteList.toString())
+        let deleteSql = `DELETE FROM formConfiguration WHERE id in (${data.deleteList.toString()})`;
+        let delDoc = await sqlFun(deleteSql)
+        if (delDoc.err) {
+            Callback({
+                code: 50008,
+                error: delDoc.errorMsg,
+                message: '数据操作失败请联系管理员'
+            })
+            return
+        }
+        if(!data.list.length){
+            Callback({
+                data: delDoc
+            })
+            return
+        }
     }
-
-    let addSqlParams = data.list.map(item => {
-        return [0, item.formId, item.formModel, item.label, item.type, item.size, item.isCheck, item.editlist, item.disabled, item.isValidator, JSON.stringify(item.rules), item.btnFun, item.btnType, item.text]
-    })
-    let sql = `insert into formConfiguration(id, formId, formModel,label, type, size, isCheck, editlist, disabled, isValidator, rules, btnFun, btnType, text) value ?`;
-    let doc = await sqlFun(sql, addSqlParams, true)
-    if (doc.err) {
-        Callback({
-            code: 50008,
-            error: doc.errorMsg,
-            message: '数据操作失败请联系管理员'
+    if(data.list.length){
+        let addSqlParams = data.list.map(item => {
+            return [item.id?item.id:0, item.formId, item.formModel, item.label, item.type, item.size, item.isCheck, item.editlist, item.disabled, item.isValidator, JSON.stringify(item.rules), item.btnFun, item.btnType, item.text,item.sortId,item.newDate]
         })
-        return
+        let sql = `insert into formConfiguration  (id, formId, formModel,label, type, size, isCheck, editlist, disabled, isValidator, rules, btnFun, btnType, text, sortId, newDate) values ? ON DUPLICATE KEY UPDATE formModel= values(formModel),label= values(label),type=values(type),size=values(size),isCheck=values(isCheck),editlist=values(editlist), disabled=values(disabled), isValidator=values(isValidator), rules=values(rules), btnFun=values(btnFun), btnType=values(btnType), text=values(text), sortId=values(sortId), newDate=values(newDate)`;
+        
+        let doc = await sqlFun(sql, addSqlParams,true)
+        if (doc.err) {
+            Callback({
+                code: 50008,
+                error: doc.errorMsg,
+                message: '数据操作失败请联系管理员'
+            })
+            return
+        }
+        Callback({
+            data: doc
+        })
     }
-    Callback({
-        data: doc
-    })
 }
 
 
 // 获取表单配置列表
 exports.AllFormConfigurationMsq = async (data, Callback) => {
-    let sql = `SELECT * FROM formConfiguration WHERE formId = ?`;
+    let sql = `SELECT * FROM formConfiguration WHERE formId = ? ORDER BY sortId`;
     let sqlParams = [data];
     let doc = await sqlFun(sql, sqlParams)
     if (doc.err) {
@@ -750,39 +760,60 @@ exports.AllFormConfigurationMsq = async (data, Callback) => {
 // 	[0, 'yi1', '1']
 // ]
 // let aGetRouterListMsqs = async (data, Callback) => {
-    // let sql = `insert into aaas(id,path,name) value ?`;
+//     let sql = `insert into aaas(id,path,name) value ?`;
 
-    // let doc = await sqlFun(sql,data,true)
-    // console.log(doc)
-    // // if(doc.err){
-    // //     Callback({
-    // //         code:50008,
-    // //         message:'数据操作失败请联系管理员'
-    // //     })
-    // //     return
-    // // }
-    // // Callback({
-    // //     data:doc
-    // // })
+//     let doc = await sqlFun(sql,data,true)
+//     console.log(doc)
+//     if(doc.err){
+//         Callback({
+//             code:50008,
+//             message:'数据操作失败请联系管理员'
+//         })
+//         return
+//     }
+//     Callback({
+//         data:doc
+//     })
 // }
 // aGetRouterListMsqs(valuess)
 
-// 批量删除
+// // 批量删除
 // let deleteAll = async (data, Callback) => {
 //     console.log(data,'sdsdsdsd')
 //     let sql = `DELETE FROM aaas WHERE id in (${data})`;
 //     let doc = await sqlFun(sql)
 //     console.log(doc)
-    // if(doc.err){
-    //     Callback({
-    //         code:50008,
-    //         message:'数据操作失败请联系管理员'
-    //     })
-    //     return
-    // }
-    // Callback({
-    //     data:doc
-    // })
+//     if(doc.err){
+//         Callback({
+//             code:50008,
+//             message:'数据操作失败请联系管理员'
+//         })
+//         return
+//     }
+//     Callback({
+//         data:doc
+//     })
 // }
-// deleteAll("00000000002,00000000003,00000000004")
 
+// deleteAll("00000000002,00000000003,00000000004")
+// // 批量修改   mysql有个神奇的语法：insert into ... on duplicate key update，该语法在insert的时候，如果insert的数据会引起唯一索引（包括主键索引）的冲突，即这个唯一值重复了，则不会执行insert操作，而执行后面的update操作。我们通过这个特性就可以利用批量insert的方法来进行批量更新，代码如下：
+// let updateAll = async (data, Callback) => {
+//     let arr= [
+//         [0,'sss','1221'],
+//         [1,'sss','1221'],
+//         [2,'sss','1221']
+//     ]
+//     let sql = `insert into formConfiguration  (id, name,age) values ? ON DUPLICATE KEY UPDATE formModel= values(name),label= values(age)`;
+//     let doc = await sqlFun(sql,arr,true)
+//      if(doc.err){
+//         Callback({
+//             code:50008,
+//             message:'数据操作失败请联系管理员'
+//         })
+//         return
+//     }
+//     Callback({
+//         data:doc
+//     })
+
+// }

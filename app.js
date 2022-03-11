@@ -14,6 +14,7 @@ const cors = require("cors");
 let app = express();
 var url=require('url');
 const httpProxy = require('express-http-proxy')
+const dateFormat = require('./util/dateFormat')
 //挂载参数处理中间件
 app.use(cors());
 //处理json格式的参数
@@ -43,20 +44,31 @@ function clearLogsFun(){
   let jin = moment().format("YYYY-MM-DD")
   let qian  = moment(time-yitina).format("YYYY-MM-DD")
   let daqian =  moment(time-(yitina*2)).format("YYYY-MM-DD")
-  logsfs.map(item=>{
-    console.log(item.indexOf(jin),jin,qian,daqian)
-    if(item.indexOf(jin)=='-1'||item.indexOf(qian)=='-1'){
-      fs.unlinkSync(`./logs/${item}`,function (err) {
-        if (err) throw err;
+  function unlinkSync(item){
+    fs.unlinkSync(`./logs/${item}`,function (err) {
+      if (err) throw err;
     });
+  }
+  console.log(logsfs)
+  logsfs.map(item=>{
+    console.log(item.indexOf(jin),item.indexOf(qian),item.indexOf(daqian))
+    if(item.indexOf(jin) == -1){
+      if(item.indexOf(qian) == -1){
+        if(item.indexOf(daqian)== -1 ){
+          unlinkSync(item);
+        }
+      }
     }
   })
 }
-// clearLogsFun()
-setInterval(()=>{
-  clearLogsFun()
-},yitina)
 
+let config = {//参数的说明
+  interval: 1, //间隔天数，间隔为整数
+  runNow: true, //是否立即运行
+  time: "01:00:00" //执行的时间点 时在0~23之间
+}
+
+dateFormat.timeoutFunc(clearLogsFun,config)
 //token验证中间件
 app.use((req, res, next) => {
   const Uri = url.parse(req.url)
@@ -92,8 +104,8 @@ app.use((req, res, next) => {
 // 用户管理将路由引入
 app.use('/basicsRouter',basicsRouter);
 app.use('/reskRouter',reskRouter);
+// node后期开的微服务与网关使用
 const userServiceProxy = httpProxy('http://localhost:3034')
-// 后期开的微服务与网关使用
 app.use('/aaa', (req,res,next)=>{
   console.log('aaa')
   userServiceProxy(req, res, (errs)=>{

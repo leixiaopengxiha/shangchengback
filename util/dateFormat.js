@@ -1,3 +1,4 @@
+// 时间格式化
 exports.dateFormat=(fmt, date)=> {
     date = new Date(date)
     let ret;
@@ -17,4 +18,29 @@ exports.dateFormat=(fmt, date)=> {
         };
     };
     return fmt;
+}
+
+// 定时任务 使用方法
+// config = {//参数的说明
+//   interval: 1, //间隔天数，间隔为整数
+//   runNow: true, //是否立即运行
+//   time: "11:02:00" //执行的时间点 时在0~23之间
+// }
+// timeoutFunc(config, clearLogsFun)
+exports.timeoutFunc =(func,config={
+    interval: 1, //间隔天数，间隔为整数
+    runNow: false, //是否立即运行
+    time: "00:00:00", //执行的时间点 时在0~23之间
+} )=>{
+    console.log(config)
+    config.runNow && func()
+    const nowTime = new Date().getTime()
+    const timePoints = config.time.split(':').map(i => parseInt(i))
+    console.log(new Date().setHours(...timePoints))
+    let recent = new Date().setHours(...timePoints)
+    recent >= nowTime || (recent += 24 * 3600000)
+    setTimeout(() => {
+        func()
+        setInterval(func, config.interval * 3600000)
+    }, recent - nowTime)
 }
