@@ -8,6 +8,7 @@ let Jwt = require('../../../util/token');
 
 const log4js= require('../../../log-config')
 const othlogger = log4js.getLogger('oth')
+
 // const path = require("path");
 // const fs = require('fs')
 // 注册
@@ -464,12 +465,9 @@ exports.AllRolePermissions  = (req,res)=>{
     })
 }
 
-// AddFormListMsq
-
 // 新增表单列
 exports.AddFormList = (req,res)=>{
     let data = JSON.parse(JSON.stringify(req.body))
-    console.log(data)
     userMsq.AddFormListMsq(data,(docd)=>{
         if (!docd.data) {
             res.json(docd)
@@ -485,7 +483,6 @@ exports.AddFormList = (req,res)=>{
 // 修改表单列
 exports.ModifyFormList = (req,res)=>{
     let data = JSON.parse(JSON.stringify(req.body))
-    console.log(data)
     userMsq.ModifyFormListMsq(data,(docd)=>{
         if (!docd.data) {
             res.json(docd)
@@ -502,13 +499,11 @@ exports.ModifyFormList = (req,res)=>{
 // 获取表单列表
 exports.GetAllFormList = (req,res)=>{
     let data = JSON.parse(JSON.stringify(req.body))
-    console.log(data)
     userMsq.GetAllFormListMsq(data,(docd)=>{
         if (!docd.data) {
             res.json(docd)
             return
         }
-        console.log(docd)
         let total = docd.data[0][0].total
         let dataList =  docd.data[1]
         res.json({
@@ -523,7 +518,6 @@ exports.GetAllFormList = (req,res)=>{
 // 新增修改表单列
 exports.AddFormConfiguration = (req,res)=>{
     let data = JSON.parse(JSON.stringify(req.body))
-    console.log(data)
     userMsq.AddFormConfigurationMsq(data,(docd)=>{
         if (!docd.data) {
             res.json(docd)
@@ -541,7 +535,6 @@ exports.AddFormConfiguration = (req,res)=>{
 // 获取表单配置列表
 exports.GetAllFormConfigurationList = (req,res)=>{
     let data = JSON.parse(JSON.stringify(req.body))
-    console.log(data)
     userMsq.AllFormConfigurationMsq(data.formId,(docd)=>{
         if (!docd.data) {
             res.json(docd)
@@ -555,6 +548,119 @@ exports.GetAllFormConfigurationList = (req,res)=>{
              code: 2000,
              data: datas,
              message: "获取成功"
+        });
+    })
+}
+// 用户获取表单信息
+exports.getUserFormConfiguration = (req,res)=>{
+    let data = JSON.parse(JSON.stringify(req.body))
+    data.creationTime = dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
+    userMsq.UserFormConfigurationMsq(data.formId,(docd)=>{
+        if (!docd.data) {
+            res.json(docd)
+            return
+        }
+        if(docd.data.length==0){
+            res.json({
+                code: 2000,
+                data: docd.data,
+                message:'该表单暂未进行配置或者是已被禁用',
+            });
+            return
+        }
+        let datas = docd.data.map(item=>{
+            item.rules = JSON.parse(item.rules)
+            return item
+        })
+        res.json({
+            code: 2000,
+            data: datas,
+            message: "获取成功"
+        });
+        
+    })
+}
+
+// 新增字典列表
+exports.AddDictionaryList = (req,res)=>{
+    let data = JSON.parse(JSON.stringify(req.body))
+    data.creationTime = dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
+    userMsq.AddDictionaryListMsq(data,(docd)=>{
+        if (!docd.data) {
+            res.json(docd)
+            return
+        }
+        res.json({
+            code: 2000,
+            data:{id:docd.data.insertId},
+            message: "保存成功"
+        });
+    })
+}
+
+// 获取字典列表
+exports.AllDictionaryList = (req,res)=>{
+    let data = JSON.parse(JSON.stringify(req.body))
+    userMsq.AllDictionaryListMsq(data,(docd)=>{
+        if (!docd.data) {
+            res.json(docd)
+            return
+        }
+        let total = docd.data[0][0].total
+        let dataList =  docd.data[1]
+        res.json({
+             code: 2000,
+             total: total,
+             data: dataList,
+             message: "获取成功"
+        });
+    })
+}
+
+// 新增字典配置
+exports.AddDictionaryPage = (req,res)=>{
+    let data = JSON.parse(JSON.stringify(req.body))
+    data.creationTime=dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
+    userMsq.AddDictionaryPageMsq(data,(docd)=>{
+        if (!docd.data) {
+            res.json(docd)
+            return
+        }
+        res.json({
+            code: 2000,
+            data:{id:docd.data.insertId},
+            message: "保存成功"
+        });
+    })
+}
+
+// 获取字典配置信息
+exports.AllDictionaryPage  = (req,res)=>{
+    let data = JSON.parse(JSON.stringify(req.body))
+    userMsq.AllDictionaryPageMsq(data,(docd)=>{
+        if (!docd.data) {
+            res.json(docd)
+            return
+        }
+        res.json({
+            code: 2000,
+            data: docd.data,
+            message: "获取成功"
+        });
+    })
+}
+// 用户获取字典信息
+exports.UserDictionaryPage = (req,res)=>{
+    let data = JSON.parse(JSON.stringify(req.body))
+    userMsq.UserDictionaryPageMsq(data,(docd)=>{
+        if (!docd.data) {
+            res.json(docd)
+            return
+        }
+        res.json({
+            code: 2000,
+            data: docd.data,
+            message: "获取成功"
         });
     })
 }

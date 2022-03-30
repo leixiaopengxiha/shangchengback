@@ -56,6 +56,20 @@ router
   .post('/addFormConfiguration',admin.AddFormConfiguration)
   // 获取表单配置列表
   .post('/getAllFormConfigurationList',admin.GetAllFormConfigurationList)
+  // 用户获取表单信息
+  .post('/getUserFormConfiguration', admin.getUserFormConfiguration)
+  // 添加字典列表
+  .post('/addDictionaryList', admin.AddDictionaryList)
+  // 获取字典列表
+  .post('/allDictionaryList', admin.AllDictionaryList)
+  // 配置和修改字典项
+  .post('/addDictionaryPage', admin.AddDictionaryPage)
+  // 获取字典配置信息
+  .post('/allDictionaryPage', admin.AllDictionaryPage)
+  // 用户获取字典信息
+  .post('/userDictionaryPage', admin.UserDictionaryPage)
+
+
 module.exports = router
 
 
