@@ -6,20 +6,23 @@ const admin = require("./routes/admin");
 let router = express.Router();
 // 路由
 router
-  // 注册
-  .post("/register", admin.Register)
   // 登录
   .post("/login", admin.Login)
   // 获取当前登录用户信息
   .get("/getinfo",admin.GetInfo)
+  // 获取路由信息与侧边栏
   .post('/routerpage',admin.routerPage)
-  .post('/homepage',admin.Homepage)
+  // .post('/homepage',admin.Homepage)
   // 添加路由信息
   .post('/addrouterpage',admin.addRouterPage)
+  // 获取菜单配置列表
+  .post('/queryrouterlist',admin.QueryRouterList)
   // 删除路由信息
   .post('/deleterouterpage',admin.deleteRouterPage)
-  // 修改
+  // 修改菜单配置信息
   .post('/updaterouterlistpage',admin.UpdateRouterListPage)
+  // 添加用户列表
+  .post("/register", admin.Register)
   // 获取用户列表
   .post('/alluserpage',admin.AllUserPage)
   // 删除用户
@@ -28,20 +31,18 @@ router
   .post('/updateuserpage',admin.UpdateUserPage)
   // 修改用户密码
   .post('/updateuserpwd',admin.UpdateUserPwdMsq)
-  // 用户管理获取列表
-  .post('/queryrouterlist',admin.QueryRouterList)
   // 给用户添加路由权限
-  .post('/upuserrouter',admin.upUserRouter)
+  // .post('/upuserrouter',admin.upUserRouter)
   // 添加角色管理
   .post('/addrolemanagement',admin.AddRoleManagement)
-  // 添加角色人员
-  .post('/addRolePersonnel',admin.AddRolePersonnel)
-  // 添加角色路由权限
-  .post('/addRolePermissions',admin.AddRolePermissions)
   // 获取角色管理列表
   .post('/allRoleManagement',admin.AllRoleManagement)
   // 修改角色管理
   .post('/updateRoleManagement',admin.UpdateRoleManagement)
+  // 添加角色人员
+  .post('/addRolePersonnel',admin.AddRolePersonnel)
+  // 添加角色路由权限
+  .post('/addRolePermissions',admin.AddRolePermissions)
   // 获取角色人员管理
   .post('/allRolePersonnel',admin.AllRolePersonnel)
   // 获取角色路由权限
@@ -56,7 +57,7 @@ router
   .post('/addFormConfiguration',admin.AddFormConfiguration)
   // 获取表单配置列表
   .post('/getAllFormConfigurationList',admin.GetAllFormConfigurationList)
-  // 用户获取表单信息
+  // 页面获取表单信息
   .post('/getUserFormConfiguration', admin.getUserFormConfiguration)
   // 添加字典列表
   .post('/addDictionaryList', admin.AddDictionaryList)

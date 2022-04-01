@@ -444,8 +444,10 @@ exports.UpdateRoleManagementMsq = async (data, Callback) => {
 // 添加角色人员管理
 exports.setAddRolePersonnel = async (data, Callback) => {
     let sqld = 'DELETE FROM rolePersonnel WHERE roleId = ?';
+
     let addSqlParams = [data.roleId];
     let delets = await sqlFun(sqld, addSqlParams)
+    console.log()
     if (delets.err) {
         Callback({
             code: 50008,
@@ -453,6 +455,11 @@ exports.setAddRolePersonnel = async (data, Callback) => {
             message: '数据操作失败请联系管理员'
         })
         return
+    }
+    if(!data.sqlList.length){
+        Callback({
+            data: delets
+        })
     }
     let sql = 'INSERT INTO rolePersonnel(id,userId,roleId) VALUES ?';
     let doc = await sqlFun(sql, data.sqlList, true)

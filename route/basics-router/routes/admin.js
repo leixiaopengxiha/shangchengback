@@ -121,12 +121,12 @@ exports.GetInfo = (req, res) => {
     })
 }
 
-// 获取token 
-exports.Homepage = (req, res) => {
-    res.json({
-        code: 2000
-    })
-}
+// // 获取token 
+// exports.Homepage = (req, res) => {
+//     res.json({
+//         code: 2000
+//     })
+// }
 
 // 删除用户
 exports.DeleteUserpage = (req,res)=>{
@@ -319,21 +319,21 @@ exports.UpdateUserPwdMsq = (req,res)=>{
     })
 }
 
-// 给用户添加路由权限
-exports.upUserRouter=(req,res)=>{
-    let data = req.body
-    console.log(data,'给用户添加路由权限')
-    // userMsq.UpdateRouterMsq({roles:JSON.stringify(data.roles),username:data.username },(docd)=>{
-    //     if (!docd.data) {
-    //         res.json(docd)
-    //         return
-    //     }
-    //     res.json({
-    //         code: 2000,
-    //         message: "保存成功"
-    //     });
-    // })
-}
+// // 给用户添加路由权限
+// exports.upUserRouter=(req,res)=>{
+//     let data = req.body
+//     console.log(data,'给用户添加路由权限')
+//     // userMsq.UpdateRouterMsq({roles:JSON.stringify(data.roles),username:data.username },(docd)=>{
+//     //     if (!docd.data) {
+//     //         res.json(docd)
+//     //         return
+//     //     }
+//     //     res.json({
+//     //         code: 2000,
+//     //         message: "保存成功"
+//     //     });
+//     // })
+// }
 // 新增角色管理
 exports.AddRoleManagement = (req,res)=>{
     let data = req.body
