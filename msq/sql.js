@@ -62,7 +62,6 @@ exports.sqlFun = (sql, user, isShow,) => {
           })
           errlogger.error({
             sql: sql,
-            user: user,
             logger: err
           });
           return;

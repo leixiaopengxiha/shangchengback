@@ -768,7 +768,7 @@ exports.UserFormConfigurationMsq = async (data, Callback) => {
     })
 }
 
-// 新增字典列表sql
+// 新增字典dictionaryKey校验sql
 exports.AddDictionaryListMsq = async (data, Callback) => {
     let cxKeysql =  `SELECT * FROM dictionaryList WHERE dictionaryKey=? AND isDictionaryList = '1'`;
     let cxParams = [data.dictionaryKey];
@@ -788,20 +788,8 @@ exports.AddDictionaryListMsq = async (data, Callback) => {
         })
         return
     }
-    let sql = `INSERT INTO dictionaryList(id, sidebar, isDictionaryList, dictionaryKey, dictionaryName,creationTime) VALUES (0,?,?,?,?,?)`;
-    let sqlParams = [data.sidebar,'1',data.dictionaryKey,data.dictionaryName,data.creationTime];
-    let doc = await sqlFun(sql, sqlParams)
-    if (doc.err) {
-        Callback({
-            code: 50008,
-            error: doc.errorMsg,
-            message: '数据操作失败请联系管理员'
-        })
-        return
-    }
-    
     Callback({
-        data: doc
+        data: cxdoc
     })
 }
 // 获取字典列表sql
@@ -879,7 +867,7 @@ exports.AddDictionaryPageMsq = async (data, Callback) => {
             return [item.id?item.id:0, item.dicKey, item.dicValue, item.sortId, data.sidebar, '0', data.dictionaryKey, data.dictionaryName, data.creationTime]
         })
         addSqlParams.push(
-            [ data.id,null,null,null, data.sidebar,'1',data.dictionaryKey,data.dictionaryName,data.creationTime]
+            [ data.id?data.id:0,null,null,null, data.sidebar,'1',data.dictionaryKey,data.dictionaryName,data.creationTime]
         )
         let sql = `INSERT INTO dictionaryList(id, dicKey, dicValue, sortId, sidebar, isDictionaryList, dictionaryKey, dictionaryName, creationTime) VALUES ? ON DUPLICATE KEY UPDATE dicKey= values(dicKey),dicValue= values(dicValue),sidebar=values(sidebar),sortId=values(sortId),isDictionaryList=values(isDictionaryList),dictionaryKey=values(dictionaryKey), dictionaryName=values(dictionaryName), creationTime=values(creationTime)`;
         let doc = await sqlFun(sql, addSqlParams,true)
@@ -929,12 +917,10 @@ exports.FormDictionaryPageMsq = async (data, Callback) => {
         return
     }
 
-
     let obj = {
         diclist:doc[0],
         dicOption:{}
     }
-    // let dicOption ={}
     doc[0].map(item=>{
         obj.dicOption[item.dictionaryKey]=doc[1].filter(items=>items.dictionaryKey==item.dictionaryKey)
     })
@@ -979,12 +965,6 @@ exports.UserDictionaryPageMsq = async (data, Callback) => {
             data: docs
         })
     }
-   
-   
-   
-    // Callback({
-    //     data: doc
-    // })
 }
 
 // 字典删除
