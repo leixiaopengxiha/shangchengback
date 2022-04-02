@@ -174,8 +174,8 @@ exports.GetRouterMsq = async (data, Callback) => {
 
 // 获取用户列表
 exports.AllUserMsq = async (data, Callback) => {
-    let sqlTotal = "select count(1) as total from user where 1=1";
-    let sqlDate = "select * from user where 1=1";
+    let sqlTotal = "select count(1) as total from user where 1=1 AND username!='admin'";
+    let sqlDate = "select * from user where 1=1 AND username!='admin'";
     let sqltArr = []
     let sqldArr = []
     if (data.username) {
@@ -561,7 +561,7 @@ exports.setAddRolePermissions = async (data, Callback, isShou) => {
         })
         return
     }
-    let sql = 'INSERT INTO rolePermissions(id,routerId,roleId) VALUES ?';
+    let sql = 'INSERT INTO rolePermissions(id,routerId,roleId,ishalf) VALUES ?';
     let doc = await sqlFun(sql, data.sqlList, true)
     if (doc.err) {
         Callback({
@@ -578,7 +578,7 @@ exports.setAddRolePermissions = async (data, Callback, isShou) => {
 
 // 获取角色路由
 exports.AllRolePermissionsMsq = async (data, Callback) => {
-    let sql = `SELECT * FROM rolePermissions WHERE roleId in (${data})`;
+    let sql = `SELECT * FROM rolePermissions WHERE roleId in (${data}) AND ishalf!='1'`;
     let doc = await sqlFun(sql)
     if (doc.err) {
         Callback({
@@ -714,9 +714,9 @@ exports.AddFormConfigurationMsq = async (data, Callback) => {
     }
     if(data.list.length){
         let addSqlParams = data.list.map(item => {
-            return [item.id?item.id:0, item.formId, item.formModel, item.label, item.type, item.size, item.isCheck, item.editlist, item.disabled, item.isValidator, JSON.stringify(item.rules), item.btnFun, item.btnType, item.text,item.sortId,item.newDate]
+            return [item.id?item.id:0, item.formId, item.formModel, item.label, item.type, item.size, item.isCheck, item.editlist, item.disabled, item.isValidator, JSON.stringify(item.rules), item.btnFun, item.btnType, item.text,item.sortId,item.newDate,item.selectCustom,item.dictionaryKey,item.dicDefault]
         })
-        let sql = `insert into formConfiguration  (id, formId, formModel,label, type, size, isCheck, editlist, disabled, isValidator, rules, btnFun, btnType, text, sortId, newDate) values ? ON DUPLICATE KEY UPDATE formModel= values(formModel),label= values(label),type=values(type),size=values(size),isCheck=values(isCheck),editlist=values(editlist), disabled=values(disabled), isValidator=values(isValidator), rules=values(rules), btnFun=values(btnFun), btnType=values(btnType), text=values(text), sortId=values(sortId), newDate=values(newDate)`;
+        let sql = `insert into formConfiguration  (id, formId, formModel,label, type, size, isCheck, editlist, disabled, isValidator, rules, btnFun, btnType, text, sortId, newDate, selectCustom, dictionaryKey, dicDefault) values ? ON DUPLICATE KEY UPDATE formModel= values(formModel),label= values(label),type=values(type),size=values(size),isCheck=values(isCheck),editlist=values(editlist), disabled=values(disabled), isValidator=values(isValidator), rules=values(rules), btnFun=values(btnFun), btnType=values(btnType), text=values(text), sortId=values(sortId), newDate=values(newDate),selectCustom=values(selectCustom),dictionaryKey=values(dictionaryKey),dicDefault=values(dicDefault)`;
         
         let doc = await sqlFun(sql, addSqlParams,true)
         if (doc.err) {
@@ -772,8 +772,27 @@ exports.UserFormConfigurationMsq = async (data, Callback) => {
 
 // 新增字典列表sql
 exports.AddDictionaryListMsq = async (data, Callback) => {
+    let cxKeysql =  `SELECT * FROM dictionaryList WHERE dictionaryKey=? AND isDictionaryList = '1'`;
+    let cxParams = [data.dictionaryKey];
+    let cxdoc = await sqlFun(cxKeysql, cxParams)
+    console.log(cxdoc)
+    if (cxdoc.err) {
+        Callback({
+            code: 50008,
+            error: doc.errorMsg,
+            message: '数据操作失败请联系管理员'
+        })
+        return
+    }
+    if(cxdoc.length){
+        Callback({
+            code: 2004,
+            message: '该字典已经存在'
+        })
+        return
+    }
     let sql = `INSERT INTO dictionaryList(id, sidebar, isDictionaryList, dictionaryKey, dictionaryName,creationTime) VALUES (0,?,?,?,?,?)`;
-    let sqlParams = [data.sidebar,data.isDictionaryList,data.dictionaryKey,data.dictionaryName,data.creationTime];
+    let sqlParams = [data.sidebar,'1',data.dictionaryKey,data.dictionaryName,data.creationTime];
     let doc = await sqlFun(sql, sqlParams)
     if (doc.err) {
         Callback({
@@ -899,9 +918,85 @@ exports.AllDictionaryPageMsq = async (data, Callback) => {
         data: doc
     })
 }
+
+// 获取表单配置页面字典配置信息
+exports.FormDictionaryPageMsq = async (data, Callback) => {
+    let sql = `SELECT * FROM dictionaryList WHERE 1=1 AND isDictionaryList=1 AND sidebar=0;SELECT * FROM dictionaryList WHERE 1=1 AND isDictionaryList=0 AND sidebar=0`;
+    let doc = await sqlFun(sql)
+    console.log(doc)
+    if (doc.err) {
+        Callback({
+            code: 50008,
+            error: doc.errorMsg,
+            message: '数据操作失败请联系管理员'
+        })
+        return
+    }
+
+
+    let obj = {
+        diclist:doc[0],
+        dicOption:{}
+    }
+    // let dicOption ={}
+    doc[0].map(item=>{
+        obj.dicOption[item.dictionaryKey]=doc[1].filter(items=>items.dictionaryKey==item.dictionaryKey)
+    })
+    console.log('sss',obj)
+    Callback({
+        data: obj
+    })
+}
+
 // 用户获取字典信息
 exports.UserDictionaryPageMsq = async (data, Callback) => {
-    let sql = `SELECT * FROM dictionaryList WHERE dictionaryKey=? AND isDictionaryList=0 AND sidebar=0`;
+  
+    console.log()
+    if(data.list){
+        let sqls = `SELECT * FROM dictionaryList WHERE dictionaryKey in ('${data.list.join("','")}') AND isDictionaryList=0 AND sidebar=0 ORDER BY sortId`;
+        let docs = await sqlFun(sqls)
+        if (docs.err) {
+            Callback({
+                code: 50008,
+                error: docs.errorMsg,
+                message: '数据操作失败请联系管理员'
+            })
+            return
+        }
+        let obj ={}
+        data.list.map(item=>{
+            obj[item]=docs.filter(items=>items.dictionaryKey==item)
+        })
+        Callback({
+            data: obj
+        })
+    }else{
+        let sql = `SELECT * FROM dictionaryList WHERE dictionaryKey in ? AND isDictionaryList=0 AND sidebar=0`;
+        let sqlParams = [data.dictionaryKey];
+        let doc = await sqlFun(sql, sqlParams)
+        if (doc.err) {
+            Callback({
+                code: 50008,
+                error: doc.errorMsg,
+                message: '数据操作失败请联系管理员'
+            })
+            return
+        }
+        Callback({
+            data: docs
+        })
+    }
+   
+   
+   
+    // Callback({
+    //     data: doc
+    // })
+}
+
+// 字典删除
+exports.DeleteDictionaryPageMsq = async (data, Callback) => {
+    let sql = ` DELETE FROM  dictionaryList WHERE dictionaryKey=?`;
     let sqlParams = [data.dictionaryKey];
     let doc = await sqlFun(sql, sqlParams)
     if (doc.err) {

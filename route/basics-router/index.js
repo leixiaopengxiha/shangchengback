@@ -67,9 +67,12 @@ router
   .post('/addDictionaryPage', admin.AddDictionaryPage)
   // 获取字典配置信息
   .post('/allDictionaryPage', admin.AllDictionaryPage)
-  // 用户获取字典信息
+  // 页面获取字典信息
   .post('/userDictionaryPage', admin.UserDictionaryPage)
-
+  // 字典删除
+  .post('/deleteDictionaryPage', admin.DeleteDictionaryPage)
+  // 配置表单获取字典
+  .post('/formDictionaryPage', admin.FormDictionaryPage)
 
 module.exports = router
 

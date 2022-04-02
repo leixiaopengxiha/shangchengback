@@ -432,7 +432,10 @@ exports.AddRolePermissions  = (req,res)=>{
     let data = JSON.parse(JSON.stringify(req.body))
     let datas = []
     data.list.map(item=>{
-         datas.push([0,item,data.roleId])
+         datas.push([0,item,data.roleId,0])
+    })
+    data.halfCheckedKeys.map(item=>{
+        datas.push([0,item,data.roleId,1])
     })
     data.sqlList = datas
     userMsq.setAddRolePermissions(data,(docd)=>{
@@ -649,6 +652,21 @@ exports.AllDictionaryPage  = (req,res)=>{
         });
     })
 }
+// 配置表单获取字典
+exports.FormDictionaryPage = (req,res)=>{
+    let data = JSON.parse(JSON.stringify(req.body))
+    userMsq.FormDictionaryPageMsq(data,(docd)=>{
+        if (!docd.data) {
+            res.json(docd)
+            return
+        }
+        res.json({
+            code: 2000,
+            data: docd.data,
+            message: "获取成功"
+        });
+    })
+}
 // 用户获取字典信息
 exports.UserDictionaryPage = (req,res)=>{
     let data = JSON.parse(JSON.stringify(req.body))
@@ -661,6 +679,22 @@ exports.UserDictionaryPage = (req,res)=>{
             code: 2000,
             data: docd.data,
             message: "获取成功"
+        });
+    })
+}
+
+// 字典删除
+exports.DeleteDictionaryPage = (req,res)=>{
+    let data = JSON.parse(JSON.stringify(req.body))
+    userMsq.DeleteDictionaryPageMsq(data,(docd)=>{
+        if (!docd.data) {
+            res.json(docd)
+            return
+        }
+        res.json({
+            code: 2000,
+            data:{id:docd.data.insertId},
+            message: "保存成功"
         });
     })
 }
