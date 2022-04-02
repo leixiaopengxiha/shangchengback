@@ -444,10 +444,8 @@ exports.UpdateRoleManagementMsq = async (data, Callback) => {
 // 添加角色人员管理
 exports.setAddRolePersonnel = async (data, Callback) => {
     let sqld = 'DELETE FROM rolePersonnel WHERE roleId = ?';
-
     let addSqlParams = [data.roleId];
     let delets = await sqlFun(sqld, addSqlParams)
-    console.log()
     if (delets.err) {
         Callback({
             code: 50008,
@@ -775,7 +773,6 @@ exports.AddDictionaryListMsq = async (data, Callback) => {
     let cxKeysql =  `SELECT * FROM dictionaryList WHERE dictionaryKey=? AND isDictionaryList = '1'`;
     let cxParams = [data.dictionaryKey];
     let cxdoc = await sqlFun(cxKeysql, cxParams)
-    console.log(cxdoc)
     if (cxdoc.err) {
         Callback({
             code: 50008,
@@ -923,7 +920,6 @@ exports.AllDictionaryPageMsq = async (data, Callback) => {
 exports.FormDictionaryPageMsq = async (data, Callback) => {
     let sql = `SELECT * FROM dictionaryList WHERE 1=1 AND isDictionaryList=1 AND sidebar=0;SELECT * FROM dictionaryList WHERE 1=1 AND isDictionaryList=0 AND sidebar=0`;
     let doc = await sqlFun(sql)
-    console.log(doc)
     if (doc.err) {
         Callback({
             code: 50008,
@@ -942,7 +938,6 @@ exports.FormDictionaryPageMsq = async (data, Callback) => {
     doc[0].map(item=>{
         obj.dicOption[item.dictionaryKey]=doc[1].filter(items=>items.dictionaryKey==item.dictionaryKey)
     })
-    console.log('sss',obj)
     Callback({
         data: obj
     })
@@ -950,8 +945,6 @@ exports.FormDictionaryPageMsq = async (data, Callback) => {
 
 // 用户获取字典信息
 exports.UserDictionaryPageMsq = async (data, Callback) => {
-  
-    console.log()
     if(data.list){
         let sqls = `SELECT * FROM dictionaryList WHERE dictionaryKey in ('${data.list.join("','")}') AND isDictionaryList=0 AND sidebar=0 ORDER BY sortId`;
         let docs = await sqlFun(sqls)
