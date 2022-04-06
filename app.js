@@ -49,9 +49,8 @@ function clearLogsFun(){
       if (err) throw err;
     });
   }
-  console.log(logsfs)
+
   logsfs.map(item=>{
-    console.log(item.indexOf(jin),item.indexOf(qian),item.indexOf(daqian))
     if(item.indexOf(jin) == -1){
       if(item.indexOf(qian) == -1){
         if(item.indexOf(daqian)== -1 ){

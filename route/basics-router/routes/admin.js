@@ -31,11 +31,11 @@ exports.Register = (req, res) => {
     }
     let idxa = Math.floor(Math.random() * 5);
     let img = [
-        'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic25.nipic.com%2F20121107%2F8847866_164210379199_2.jpg&refer=http%3A%2F%2Fpic25.nipic.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1619758500&t=d38cfd998ad20ff7fbb6db341d88dfff',
-        'http://img1.imgtn.bdimg.com/it/u=3311096003,2459030550&fm=26&gp=0.jpg',
-        'http://img4.imgtn.bdimg.com/it/u=3032770652,458815004&fm=26&gp=0.jpg',
-        'http://img4.imgtn.bdimg.com/it/u=1825300561,2663961625&fm=26&gp=0.jpg',
-        'http://img3.imgtn.bdimg.com/it/u=1363526049,1483812480&fm=11&gp=0.jpg'
+        '/images/touxiang/1.webp',
+        '/images/touxiang/2.webp',
+        '/images/touxiang/3.webp',
+        '/images/touxiang/4.webp',
+        '/images/touxiang/5.webp'
     ]
     password = password.toString(2)
     password = md5(parseInt(password, 16))
@@ -56,7 +56,8 @@ exports.Register = (req, res) => {
         if(data.code == 2000){
             let userList =  {
                 List: [username],
-                roleId: "4000000000000008"
+                roleId: "4000000000000008",
+                isRoleIds:true,
             }
             let datas = []
             userList.List.map(item=>{
