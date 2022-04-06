@@ -32,11 +32,9 @@ exports.timeoutFunc =(func,config={
     runNow: false, //是否立即运行
     time: "00:00:00", //执行的时间点 时在0~23之间
 } )=>{
-    console.log(config)
     config.runNow && func()
     const nowTime = new Date().getTime()
     const timePoints = config.time.split(':').map(i => parseInt(i))
-    console.log(new Date().setHours(...timePoints))
     let recent = new Date().setHours(...timePoints)
     recent >= nowTime || (recent += 24 * 3600000)
     setTimeout(() => {
