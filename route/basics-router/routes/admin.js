@@ -215,7 +215,7 @@ exports.addRouterPage = (req, res) => {
             roleId: "4000000000000007"
         }
         userList.List.map(item=>{
-             datas.push([0,item,userList.roleId])
+             datas.push([0,item,userList.roleId,null])
         })
         userList.sqlList = datas
         // 给管理员添加路由权限
