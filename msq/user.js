@@ -97,7 +97,7 @@ exports.UpdateUserMsqs = async (data, Callback) => {
     })
 }
 
-// 修改用户密码
+// 管理员修改用户密码
 exports.UpdateUserPwdMsqs = async (data, Callback) => {
     let sql = 'UPDATE user SET password=? WHERE username= ?';
     let sqlParams = [data.password, data.username];
@@ -114,6 +114,30 @@ exports.UpdateUserPwdMsqs = async (data, Callback) => {
     })
 }
 
+// 用户修改密码
+exports.UpdatePwdMsqs = async (data, Callback) => {
+    let sql = 'UPDATE user SET password=? WHERE username= ? AND password=?';
+    let sqlParams = [data.password, data.username,data.yspassword];
+    let doc = await sqlFun(sql, sqlParams)
+    if (doc.err) {
+        Callback({
+            code: 50008,
+            error: doc.errorMsg,
+            message: '数据操作失败请联系管理员'
+        })
+    }
+    if(doc.affectedRows==1&&doc.changedRows==1){
+        Callback({
+            data: doc
+        })
+    }else{
+        Callback({
+            code: 20004,
+            message: '原始密码错误'
+        })
+    }
+    
+}
 
 
 // 获取当前登录用户信息sql
@@ -174,8 +198,8 @@ exports.GetRouterMsq = async (data, Callback) => {
 
 // 获取用户列表
 exports.AllUserMsq = async (data, Callback) => {
-    let sqlTotal = "select count(1) as total from user where 1=1 AND username!='admin'";
-    let sqlDate = "select * from user where 1=1 AND username!='admin'";
+    let sqlTotal = "select count(1) as total from user where 1=1 AND username!='admin' order by id desc";
+    let sqlDate = "select * from user where 1=1 AND username!='admin' order by id desc";
     let sqltArr = []
     let sqldArr = []
     if (data.username) {
@@ -267,8 +291,8 @@ exports.GetRouterListMsq = async (data, Callback) => {
 }
 // 用户管理获取路由信息
 exports.GetQueryRouterListMsq = async (data, Callback) => {
-    let sqlTotal = "select count(1) as total from routerLsit where 1=1";
-    let sqlDate = "select * from routerLsit where 1=1";
+    let sqlTotal = "select count(1) as total from routerLsit where 1=1 order by id desc";
+    let sqlDate = "select * from routerLsit where 1=1 order by id desc";
     let sqltArr = []
     let sqldArr = []
     if (data.title) {
@@ -278,7 +302,7 @@ exports.GetQueryRouterListMsq = async (data, Callback) => {
         sqldArr.push(`%${data.title}%`);
     }
     if (data.currentPage && data.size) {
-        sqlDate += " limit ?,?";
+        sqlDate += " limit ?,? ";
         let start = (data.currentPage - 1) * data.size
         let end = data.currentPage * data.size
         sqldArr.push(start, end);
@@ -377,8 +401,8 @@ exports.setAddRoleManagement = async (data, Callback) => {
 
 // 获取角色管理列表
 exports.getAllRoleManagement = async (data, Callback) => {
-    let sqlTotal = "select count(1) as total from roleManagement where 1=1";
-    let sqlDate = "select * from roleManagement where 1=1";
+    let sqlTotal = "select count(1) as total from roleManagement where 1=1  order by id desc";
+    let sqlDate = "select * from roleManagement where 1=1  order by id desc";
     let sqltArr = []
     let sqldArr = []
     if (data.id) {
@@ -651,8 +675,8 @@ exports.ModifyFormListMsq = async (data, Callback) => {
 
 // 获取表单列表
 exports.GetAllFormListMsq = async (data, Callback) => {
-    let sqlTotal = "select count(1) as total from formList where 1=1";
-    let sqlDate = "select * from formList where 1=1";
+    let sqlTotal = "select count(1) as total from formList where 1=1 order by formId desc";
+    let sqlDate = "select * from formList where 1=1 order by formId desc";
     let sqltArr = []
     let sqldArr = []
     if (data.formId) {
@@ -797,8 +821,8 @@ exports.AddDictionaryListMsq = async (data, Callback) => {
 }
 // 获取字典列表sql
 exports.AllDictionaryListMsq = async (data, Callback) => {
-    let sqlTotal = "select count(1) as total from dictionaryList where isDictionaryList=1";
-    let sqlDate = "select * from dictionaryList where isDictionaryList=1";
+    let sqlTotal = "select count(1) as total from dictionaryList where isDictionaryList=1 order by id desc";
+    let sqlDate = "select * from dictionaryList where isDictionaryList=1 order by id desc";
     let sqltArr = []
     let sqldArr = []
     if (data.dictionaryKey) {

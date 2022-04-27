@@ -29,8 +29,10 @@ router
   .post('/deleteuserpage',admin.DeleteUserpage)
   // 修改用户信息
   .post('/updateuserpage',admin.UpdateUserPage)
-  // 修改用户密码
+  // 管理员修改用户密码
   .post('/updateuserpwd',admin.UpdateUserPwdMsq)
+  // 用户修改密码
+  .post('/updatePswd',admin.UpdatePwdMsqs)
   // 给用户添加路由权限
   // .post('/upuserrouter',admin.upUserRouter)
   // 添加角色管理

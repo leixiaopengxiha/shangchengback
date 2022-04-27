@@ -8,7 +8,7 @@ let Jwt = require('../../../util/token');
 
 // const path = require("path");
 // const fs = require('fs')
-// 注册
-exports.Asd = (req, res) => {
-   console.log(req)
+// 新增记账
+exports.addBookKeeping = (req, res) => {
+   console.log(req.body)
 }

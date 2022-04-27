@@ -23,8 +23,7 @@ app.use(
 );
 // 设置静态资源目录
 app.use(express.static(path.resolve("./public")));
-app.get('/reskRouter',(req,res,next)=>{
-  console.log(next)
+app.post('/reskRouter',(req,res)=>{
   console.log(req.body,'1111');
   res.json({
     code:200

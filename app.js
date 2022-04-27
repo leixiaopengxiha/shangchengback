@@ -7,7 +7,7 @@ const moment = require('moment')
 let Jwt = require('./util/token')
 // 模块开发后台
 const basicsRouter = require("./route/basics-router");
-const reskRouter = require("./route/resk");
+const applicationRouter = require("./route/application-router");
 
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -93,8 +93,9 @@ app.use((req, res, next) => {
         message: '令牌已失效，请重新登录'
     })
     } else {
+      req.headers.userId = result
       global.token = result
-        next()
+      next()
     }
   }else{
     next()
@@ -102,18 +103,17 @@ app.use((req, res, next) => {
 })
 // 用户管理将路由引入
 app.use('/basicsRouter',basicsRouter);
-app.use('/reskRouter',reskRouter);
+app.use('/applicationRouter',applicationRouter);
 // node后期开的微服务与网关使用
 const userServiceProxy = httpProxy('http://localhost:3034')
-app.use('/aaa', (req,res,next)=>{
-  console.log('aaa')
+app.use('/aaa', (req,res)=>{
   userServiceProxy(req, res, (errs)=>{
     res.json({
       code:0,
-      err: req._parsedOriginalUrl.pathname,
+      err: req.originalUrl,
       msg:'网关或后台服务可能开小差了，请稍后重试',
     })
-    errlogger.error('pathname: ',req._parsedOriginalUrl.pathname,'headers: ',req.headers,'query: ',req.query,'params ',req.params,'body: ',req.body,'errs: ',errs)
+    errlogger.error('pathname: ',req.originalUrl,'headers: ',req.headers,'query: ',req.query,'params ',req.params,'body: ',req.body,'errs: ',errs)
  })
 })
 

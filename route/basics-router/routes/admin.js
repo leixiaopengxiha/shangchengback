@@ -301,7 +301,7 @@ exports.UpdateUserPage = (req,res)=>{
     })
 }
 
-// 修改用户M密码
+// 管理员修改用户M密码
 exports.UpdateUserPwdMsq = (req,res)=>{
     let datas = req.body
     datas.password = datas.password.toString(2)
@@ -319,7 +319,30 @@ exports.UpdateUserPwdMsq = (req,res)=>{
         });
     })
 }
-
+// 用户修改密码
+exports.UpdatePwdMsqs = (req,res)=>{
+    let datas = req.body
+    // 新密码加密
+    datas.password = datas.password.toString(2)
+    datas.password = md5(parseInt(datas.password, 16))
+    datas.password = datas.password.split('').reverse().join('')
+    datas.password = md5(datas.password)
+    // 原始密码加密
+    datas.yspassword = datas.yspassword.toString(2)
+    datas.yspassword = md5(parseInt(datas.yspassword, 16))
+    datas.yspassword = datas.yspassword.split('').reverse().join('')
+    datas.yspassword = md5(datas.yspassword)
+    userMsq.UpdatePwdMsqs(datas,(docs)=>{
+        if (!docs.data) {
+            res.json(docs)
+            return
+        }
+        res.json({
+            code: 2000,
+            message: "修改成功"
+        });
+    })
+}
 // // 给用户添加路由权限
 // exports.upUserRouter=(req,res)=>{
 //     let data = req.body
