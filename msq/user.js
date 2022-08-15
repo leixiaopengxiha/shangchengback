@@ -739,9 +739,9 @@ exports.AddFormConfigurationMsq = async (data, Callback) => {
     }
     if(data.list.length){
         let addSqlParams = data.list.map(item => {
-            return [item.id?item.id:0, item.formId, item.formModel, item.label, item.type, item.size, item.isCheck, item.editlist, item.disabled, item.isValidator, JSON.stringify(item.rules), item.btnFun, item.btnType, item.text,item.sortId,item.newDate,item.selectCustom,item.dictionaryKey,item.dicDefault]
+            return [item.id?item.id:0, item.formId, item.formModel, item.label, item.type, item.size, item.isCheck, item.editlist, item.disabled, item.isValidator, JSON.stringify(item.rules), item.btnFun, item.btnType, item.text,item.sortId,item.newDate,item.selectCustom,item.dictionaryKey,item.dicDefault,item.occupiedColumns]
         })
-        let sql = `insert into formConfiguration  (id, formId, formModel,label, type, size, isCheck, editlist, disabled, isValidator, rules, btnFun, btnType, text, sortId, newDate, selectCustom, dictionaryKey, dicDefault) values ? ON DUPLICATE KEY UPDATE formModel= values(formModel),label= values(label),type=values(type),size=values(size),isCheck=values(isCheck),editlist=values(editlist), disabled=values(disabled), isValidator=values(isValidator), rules=values(rules), btnFun=values(btnFun), btnType=values(btnType), text=values(text), sortId=values(sortId), newDate=values(newDate),selectCustom=values(selectCustom),dictionaryKey=values(dictionaryKey),dicDefault=values(dicDefault)`;
+        let sql = `insert into formConfiguration  (id, formId, formModel,label, type, size, isCheck, editlist, disabled, isValidator, rules, btnFun, btnType, text, sortId, newDate, selectCustom, dictionaryKey, dicDefault,occupiedColumns) values ? ON DUPLICATE KEY UPDATE formModel= values(formModel),label= values(label),type=values(type),size=values(size),isCheck=values(isCheck),editlist=values(editlist), disabled=values(disabled), isValidator=values(isValidator), rules=values(rules), btnFun=values(btnFun), btnType=values(btnType), text=values(text), sortId=values(sortId), newDate=values(newDate),selectCustom=values(selectCustom),dictionaryKey=values(dictionaryKey),dicDefault=values(dicDefault),occupiedColumns=values(occupiedColumns)`;
         
         let doc = await sqlFun(sql, addSqlParams,true)
         if (doc.err) {
