@@ -198,8 +198,8 @@ exports.GetRouterMsq = async (data, Callback) => {
 
 // 获取用户列表
 exports.AllUserMsq = async (data, Callback) => {
-    let sqlTotal = "select count(1) as total from user where 1=1 AND username!='admin' order by id desc";
-    let sqlDate = "select * from user where 1=1 AND username!='admin' order by id desc";
+    let sqlTotal = "select count(1) as total from user where 1=1 AND username!='admin'";
+    let sqlDate = "select * from user where 1=1 AND username!='admin'";
     let sqltArr = []
     let sqldArr = []
     if (data.username) {
@@ -214,6 +214,7 @@ exports.AllUserMsq = async (data, Callback) => {
         sqltArr.push(`%${data.nickname}%`);
         sqldArr.push(`%${data.nickname}%`);
     }
+    sqlDate += " order by id desc";
     if (data.currentPage && data.size) {
         sqlDate += " limit ?,?";
         let start = (data.currentPage - 1) * data.size
@@ -291,8 +292,8 @@ exports.GetRouterListMsq = async (data, Callback) => {
 }
 // 用户管理获取路由信息
 exports.GetQueryRouterListMsq = async (data, Callback) => {
-    let sqlTotal = "select count(1) as total from routerLsit where 1=1 order by id desc";
-    let sqlDate = "select * from routerLsit where 1=1 order by id desc";
+    let sqlTotal = "select count(1) as total from routerLsit where 1=1";
+    let sqlDate = "select * from routerLsit where 1=1";
     let sqltArr = []
     let sqldArr = []
     if (data.title) {
@@ -301,6 +302,7 @@ exports.GetQueryRouterListMsq = async (data, Callback) => {
         sqltArr.push(`%${data.title}%`);
         sqldArr.push(`%${data.title}%`);
     }
+    sqlDate += " order by id desc";
     if (data.currentPage && data.size) {
         sqlDate += " limit ?,? ";
         let start = (data.currentPage - 1) * data.size
@@ -401,8 +403,8 @@ exports.setAddRoleManagement = async (data, Callback) => {
 
 // 获取角色管理列表
 exports.getAllRoleManagement = async (data, Callback) => {
-    let sqlTotal = "select count(1) as total from roleManagement where 1=1  order by id desc";
-    let sqlDate = "select * from roleManagement where 1=1  order by id desc";
+    let sqlTotal = "select count(1) as total from roleManagement where 1=1";
+    let sqlDate = "select * from roleManagement where 1=1";
     let sqltArr = []
     let sqldArr = []
     if (data.id) {
@@ -423,6 +425,7 @@ exports.getAllRoleManagement = async (data, Callback) => {
         sqltArr.push(`%${data.syzt}%`);
         sqldArr.push(`%${data.syzt}%`);
     }
+    sqlDate += " order by id desc";
     if (data.currentPage && data.size) {
         sqlDate += " limit ?,?";
         let start = (data.currentPage - 1) * data.size
@@ -675,8 +678,8 @@ exports.ModifyFormListMsq = async (data, Callback) => {
 
 // 获取表单列表
 exports.GetAllFormListMsq = async (data, Callback) => {
-    let sqlTotal = "select count(1) as total from formList where 1=1 order by formId desc";
-    let sqlDate = "select * from formList where 1=1 order by formId desc";
+    let sqlTotal = "select count(1) as total from formList where 1=1";
+    let sqlDate = "select * from formList where 1=1";
     let sqltArr = []
     let sqldArr = []
     if (data.formId) {
@@ -691,6 +694,7 @@ exports.GetAllFormListMsq = async (data, Callback) => {
         sqltArr.push(`%${data.formName}%`);
         sqldArr.push(`%${data.formName}%`);
     }
+    sqlDate += " order by formId desc";
     // 是否有分页器
     if (data.currentPage && data.size) {
         sqlDate += " limit ?,?";
@@ -821,8 +825,8 @@ exports.AddDictionaryListMsq = async (data, Callback) => {
 }
 // 获取字典列表sql
 exports.AllDictionaryListMsq = async (data, Callback) => {
-    let sqlTotal = "select count(1) as total from dictionaryList where isDictionaryList=1 order by id desc";
-    let sqlDate = "select * from dictionaryList where isDictionaryList=1 order by id desc";
+    let sqlTotal = "select count(1) as total from dictionaryList where isDictionaryList=1";
+    let sqlDate = "select * from dictionaryList where isDictionaryList=1";
     let sqltArr = []
     let sqldArr = []
     if (data.dictionaryKey) {
@@ -843,6 +847,7 @@ exports.AllDictionaryListMsq = async (data, Callback) => {
         sqltArr.push(`%${data.dictionaryName}%`);
         sqldArr.push(`%${data.dictionaryName}%`);
     }
+    sqlDate += " order by id desc";
     if (data.currentPage && data.size) {
         sqlDate += " limit ?,?";
         let start = (data.currentPage - 1) * data.size
