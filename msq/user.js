@@ -1017,6 +1017,25 @@ exports.DeleteDictionaryPageMsq = async (data, Callback) => {
     })
 }
 
+
+// 字典删除
+exports.ImgpageMsq = async (data, Callback) => {
+    console.log(data);
+    let valuess= [data.id,data.imgUrl]
+    let sql = `INSERT INTO imgpage  (id, imgId, imgUrl)VALUES(0,?,?)`;
+    let doc = await sqlFun(sql, valuess)
+    if (doc.err) {
+        Callback({
+            code: 50008,
+            error: doc.errorMsg,
+            message: '数据操作失败请联系管理员'
+        })
+        return
+    }
+    Callback({
+        data: doc
+    })
+}
 // // 用户获取表单信息
 // exports.UserFormConfigurationMsq = async (data, Callback) => {
 //     let sql = `SELECT * FROM formConfiguration WHERE formId IN (SELECT formId FROM formList WHERE formId = ? AND sidebar = '1') ORDER BY sortId`;

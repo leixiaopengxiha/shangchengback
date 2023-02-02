@@ -10,7 +10,7 @@ const log4js= require('../../../log-config')
 const othlogger = log4js.getLogger('oth')
 
 // const path = require("path");
-// const fs = require('fs')
+const fs = require('fs')
 // 注册
 exports.Register = (req, res) => {
     let {
@@ -718,6 +718,34 @@ exports.DeleteDictionaryPage = (req,res)=>{
         res.json({
             code: 2000,
             data:{id:docd.data.insertId},
+            message: "保存成功"
+        });
+    })
+}
+
+
+// 录像删除
+exports.Imgpage = (req,res)=>{
+    console.log( req.files.length);
+    let oldName = req.files[0].filename;//获取名字
+    let originalname=req.files[0].originalname;//originnalname其实就是你上传时候文件起的名字
+    //给新名字加上原来的后缀
+    let newName = req.files[0].originalname;
+    fs.renameSync('./public/upload/'+oldName, './public/upload/'+newName+'.png');//改图片的名字注意此处一定是一个路径，而不是只有文件名
+    let data = {
+        id:req.body.id,
+        imgUrl:`/upload/+${newName}.png`
+    }
+    userMsq.ImgpageMsq(data,(docd)=>{
+        if (!docd.data) {
+            res.json(docd)
+            return
+        }
+        res.json({
+            code: 2000,
+            data:{
+                url:`/upload/+${newName}.png`
+            },
             message: "保存成功"
         });
     })

@@ -15,6 +15,9 @@ let app = express();
 var url=require('url');
 const httpProxy = require('express-http-proxy')
 const dateFormat = require('./util/dateFormat')
+app.use(bodyParser.json({limit : "5000000000kb"}));
+
+const multer = require("multer");
 //挂载参数处理中间件
 app.use(cors());
 //处理json格式的参数
@@ -27,7 +30,10 @@ app.use(
 );
 // 设置静态资源目录
 app.use(express.static(path.resolve("./public")));
-
+let objMulter = multer({ dest: "./public/upload" });
+//实例化multer，传递的参数对象，dest表示上传文件的存储路径
+app.use(objMulter.any())//any表示任意类型的文件
+// app.use(objMulter.image())//仅允许上传图片类型
 const log4js= require('./log-config')
 const logger = log4js.getLogger()//根据需要获取logger
 const errlogger = log4js.getLogger('err')
@@ -72,7 +78,14 @@ dateFormat.timeoutFunc(clearLogsFun,config)
 app.use((req, res, next) => {
   const Uri = url.parse(req.url)
   const baseurl =Uri.pathname
-  if (baseurl !== '/'&&baseurl!=='/basicsRouter/register' && baseurl !== '/basicsRouter/login'){
+  let arr =[
+    '/',
+    '/basicsRouter/register',
+    '/basicsRouter/login',
+    '/basicsRouter/imgpage',
+  ];
+  let isbaseurl =  arr.some(item=>item==baseurl)
+  if (!isbaseurl){
     let token = req.headers.authorization
     let jwt = new Jwt(token)
     let result = jwt.verifyToken()

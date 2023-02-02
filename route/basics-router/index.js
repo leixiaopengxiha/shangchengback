@@ -75,6 +75,9 @@ router
   .post('/deleteDictionaryPage', admin.DeleteDictionaryPage)
   // 配置表单获取字典
   .post('/formDictionaryPage', admin.FormDictionaryPage)
+  // 录像接口
+  .post('/imgpage', admin.Imgpage)
+
 
 module.exports = router
 
