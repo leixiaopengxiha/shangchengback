@@ -8,6 +8,8 @@ let Jwt = require('./util/token')
 // 模块开发后台
 const basicsRouter = require("./route/basics-router");
 const applicationRouter = require("./route/application-router");
+const openAiRouter= require("./route/openai-router");
+
 
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -83,8 +85,12 @@ app.use((req, res, next) => {
     '/basicsRouter/register',
     '/basicsRouter/login',
     '/basicsRouter/imgpage',
+    '/openAiRouter/GenerateAi'
   ];
+  console.log(baseurl);
   let isbaseurl =  arr.some(item=>item==baseurl)
+  console.log(isbaseurl);
+  // if(!isbaseurl&&arr.indexOf()){}
   if (!isbaseurl){
     let token = req.headers.authorization
     let jwt = new Jwt(token)
@@ -117,6 +123,8 @@ app.use((req, res, next) => {
 // 用户管理将路由引入
 app.use('/basicsRouter',basicsRouter);
 app.use('/applicationRouter',applicationRouter);
+app.use('/openAiRouter', openAiRouter);
+
 // node后期开的微服务与网关使用
 const userServiceProxy = httpProxy('http://localhost:3034')
 app.use('/aaa', (req,res)=>{
