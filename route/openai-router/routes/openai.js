@@ -1,7 +1,6 @@
-// import { Configuration, OpenAIApi } from "openai";
 let { Configuration, OpenAIApi } = require("openai");
-
 let {OPENAI_API_KEY} = require('../../../util/ChatGPT')
+const log4js= require('../../../log-config')
 const othlogger = log4js.getLogger('oth')
 const configuration = new Configuration({
   apiKey: OPENAI_API_KEY,
