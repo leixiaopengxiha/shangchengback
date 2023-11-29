@@ -113,7 +113,11 @@ app.use((req, res, next) => {
     })
     } else {
       req.headers.userId = result
-      global.token = result
+      if(!global.userObj){
+        global.userObj = {}
+      }
+      global.userObj[result] = result
+      console.log(global.userObj);
       next()
     }
   }else{

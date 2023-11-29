@@ -4,10 +4,10 @@ const log4js = require('../log-config')
 const errlogger = log4js.getLogger('err')
 exports.sqlFun = (sql, user, isShow,) => {
   let connection = mysql.createConnection({
-    host: '82.157.245.11',
-    // host: 'localhost',
+    // host: '82.157.245.11',
+    host: 'localhost',
     user: 'root',
-    password: 'mirai@123..',
+    password: 'Lxp1234.',
     database: 'ShoppingMall',
     //这一功能打开以后，你就可以像下面的例子一样同时使用多条查询语句：
     multipleStatements: true,
