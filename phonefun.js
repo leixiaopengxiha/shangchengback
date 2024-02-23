@@ -35,11 +35,12 @@ app.use(
 
 /**
  * 查询营业执照的联络员手机号
+ * regNo: 统一社会信用代码
  * zsnum 要查询数的最大值
  * fzIdx 分割数
  */
 
-function phoneFun (zsnum,fzIdx=1,wsnum){
+function phoneFun (regNo,zsnum,fzIdx=1,wsnum){
     if(wsnum){
         wsnum =  `${zsnum}`.length
     }
@@ -79,7 +80,7 @@ function phoneFun (zsnum,fzIdx=1,wsnum){
     let oldPhoneUrl = (c)=>{
         return
         let  apiUrl = 'http://218.26.1.108:9081/checkLiaisonInfo.jspx';
-        apiUrl = `${apiUrl}?regNo=92140728MA0L2G0HXK&oldPhone=${c}`
+        apiUrl = `${apiUrl}?regNo=${regNo}&oldPhone=${c}`
         axios.post(apiUrl,null,)
         .then((response) => {
           console.log('请假成功！');
@@ -100,7 +101,7 @@ function phoneFun (zsnum,fzIdx=1,wsnum){
 }
 
 // 
-phoneFun(9999,100,0)
+phoneFun('12323',9999,100,0)
 // function aa(c){
     // let  apiUrl = 'http://218.26.1.108:9081/checkLiaisonInfo.jspx';
     // apiUrl = `${apiUrl}?regNo=92140728MA0L2G0HXK&oldPhone=${c}`
