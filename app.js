@@ -8,7 +8,8 @@ let Jwt = require('./util/token')
 // 模块开发后台
 const basicsRouter = require("./route/basics-router");
 const applicationRouter = require("./route/application-router");
-const openAiRouter= require("./route/openai-router");
+// const openAiRouter= require("./route/openai-router");
+const socketRouter = require("./route/socket-router");
 
 
 const bodyParser = require("body-parser");
@@ -43,6 +44,16 @@ const othlogger = log4js.getLogger('oth')
 //结合express使用，记录请求日志
 log4js.useLogger(app,logger)//这样会自动记录每次请求信息，放在其他use上面
 
+const http = require('http');
+const socketIO = require('socket.io');
+const server = http.createServer(app);
+  
+let io =socketIO(server,{
+    cors: {
+        origin: '*'
+    }
+});
+socketRouter(io)
 // 定时任务清楚日志文件
 let yitina = 24*60*60*1000
 // let yitina = 1000
@@ -85,7 +96,7 @@ app.use((req, res, next) => {
     '/basicsRouter/register',
     '/basicsRouter/login',
     '/basicsRouter/imgpage',
-    '/openAiRouter/GenerateAi'
+    // '/openAiRouter/GenerateAi'
   ];
   console.log(baseurl);
   let isbaseurl =  arr.some(item=>item==baseurl)
@@ -127,8 +138,7 @@ app.use((req, res, next) => {
 // 用户管理将路由引入
 app.use('/basicsRouter',basicsRouter);
 app.use('/applicationRouter',applicationRouter);
-app.use('/openAiRouter', openAiRouter);
-
+// app.use('/openAiRouter', openAiRouter);
 // node后期开的微服务与网关使用
 const userServiceProxy = httpProxy('http://localhost:3034')
 app.use('/aaa', (req,res)=>{
@@ -143,6 +153,6 @@ app.use('/aaa', (req,res)=>{
 })
 
 
-app.listen(3033, function () {
+server.listen(3033, function () {
   console.log("http://localhost:3033");
 });
